@@ -85,15 +85,15 @@ func main(){
 }
 ```
 
-4) See [examples](https://gitverse.ru/mirecl/catboost-cgo/example) of use
+4) See [examples](https://github.com/mirecl/catboost-cgo/tree/master/example) of use
 
 ### Usage
 
-+ [Regression](https://github.com/mirecl/catboost-cgo/example/regressor)
-+ [Binary classification](https://github.com/mirecl/catboost-cgo/example/classifier)
-+ [Multiclassification](https://github.com/mirecl/catboost-cgo/example/multiclassification)
-+ [Titanic](https://github.com/mirecl/catboost-cgo/example/titanic)
-+ [Metadata](https://github.com/mirecl/catboost-cgo/example/metadata)
++ [Regression](example/regressor)
++ [Binary classification](https://github.com/mirecl/catboost-cgo/tree/master/example/classifier)
++ [Multiclassification](https://github.com/mirecl/catboost-cgo/tree/master/example/multiclassification)
++ [Titanic](https://github.com/mirecl/catboost-cgo/tree/master/example/titanic)
++ [Metadata](https://github.com/mirecl/catboost-cgo/tree/master/example/metadata)
 
 ### Thanks
 
