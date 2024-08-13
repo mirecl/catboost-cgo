@@ -1,0 +1,4 @@
+venv
+catboost_info
+.DS_Store
+.ruff_cache
