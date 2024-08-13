@@ -1,7 +1,7 @@
 ## CatBoost-Cgo
 
 Evaluation library is the fastest way for inference a model catboost. The library provides a [C API](https://github.com/catboost/catboost/blob/master/catboost/libs/model_interface/c_api.h).\
-The [C API](https://github.com/catboost/catboost/blob/master/catboost/libs/model_interface/c_api.h) interface can be accessed from any programming language (example Golang + **[Cgo](https://go.dev/wiki/cgo)**).
+The [C API](https://github.com/catboost/catboost/blob/master/catboost/libs/model_interface/c_api.h) interface can be accessed from any programming language (example Golang + [Cgo](https://go.dev/wiki/cgo)).
 
 Prebuilt shared library (`*.so` | `*.dylib`) artifacts are available of the [releases](https://github.com/catboost/catboost/releases) page on GitHub CatBoost project.\
 The shared library should be in `/usr/local/lib` or set path in environment `CATBOOST_LIBRARY_PATH`.
@@ -85,15 +85,15 @@ func main(){
 }
 ```
 
-4) See [examples](https://github.com/mirecl/catboost-cgo/tree/master/example) of use
+4) See [examples](example) of use
 
 ### Usage
 
 + [Regression](example/regressor)
-+ [Binary classification](https://github.com/mirecl/catboost-cgo/tree/master/example/classifier)
-+ [Multiclassification](https://github.com/mirecl/catboost-cgo/tree/master/example/multiclassification)
-+ [Titanic](https://github.com/mirecl/catboost-cgo/tree/master/example/titanic)
-+ [Metadata](https://github.com/mirecl/catboost-cgo/tree/master/example/metadata)
++ [Binary classification](example/classifier)
++ [Multiclassification](example/multiclassification)
++ [Titanic](example/titanic)
++ [Metadata](example/metadata)
 
 ### Thanks
 
