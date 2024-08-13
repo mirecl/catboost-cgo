@@ -1,6 +1,6 @@
 ## CatBoost-Cgo
 
-Evaluation library is the fastest way for inference a model catboost. The library provides a [C API](https://github.com/catboost/catboost/blob/master/catboost/libs/model_interface/c_api.h).\
+Evaluation library is the fastest way for inference a model CatBoost. The library provides a [C API](https://github.com/catboost/catboost/blob/master/catboost/libs/model_interface/c_api.h).\
 The [C API](https://github.com/catboost/catboost/blob/master/catboost/libs/model_interface/c_api.h) interface can be accessed from any programming language (example Golang + [Cgo](https://go.dev/wiki/cgo)).
 
 Prebuilt shared library (`*.so` | `*.dylib`) artifacts are available of the [releases](https://github.com/catboost/catboost/releases) page on GitHub CatBoost project.\
