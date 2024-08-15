@@ -24,6 +24,21 @@ For more information, see <https://catboost.ai/en/docs/concepts/c-plus-plus-api_
   </tr>
 </table>
 
+<table>
+  <tr>
+    <th>CatBoost</th>
+    <th>CatBoost-Cgo</th>
+  </tr>
+  <tr>
+    <td align="center">v1.2.4</td>
+    <td align="center">v0.1.0</td>
+  </tr>
+  <tr>
+    <td align="center">v1.2.5</td>
+    <td align="center">v0.1.0</td>
+  </tr>
+</table>
+
 **Supported functionality** (<https://catboost.ai/en/docs/concepts/python-quickstart>):
 
 + CatBoostRegressor ✅

@@ -1,6 +1,7 @@
 package catboost
 
 /*
+#cgo LDFLAGS: -ldl
 #cgo CFLAGS: -O3 -g
 #include <dlfcn.h>
 #include <catboost_wrapper.h>
