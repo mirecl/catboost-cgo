@@ -15,6 +15,10 @@ const (
 	testModelPathMetadata            = "../example/metadata/metadata.cbm"
 )
 
+func TestVersion(t *testing.T) {
+	require.Equal(t, "v1.2.5", cb.Version())
+}
+
 func TestLoadFullModel(t *testing.T) {
 	modelRegressor, err := cb.LoadFullModelFromFile(testModelPathRegressor)
 	require.NoError(t, err)

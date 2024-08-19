@@ -50,6 +50,10 @@ var (
 
 var catboostSharedLibraryPath = ""
 
+func Version() string {
+	return fmt.Sprintf("v%d.%d.%d", C.CATBOOST_APPLIER_MAJOR, C.CATBOOST_APPLIER_MINOR, C.CATBOOST_APPLIER_FIX)
+}
+
 func SetSharedLibraryPath(path string) {
 	catboostSharedLibraryPath = path
 }
