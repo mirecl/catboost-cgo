@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"slices"
 	"strings"
 	"unsafe"
 )
@@ -42,6 +43,9 @@ var (
 	ErrLoadFullModelFromBuffer   = errors.New("failed load model from bytes")
 	ErrGetModelUsedFeaturesNames = errors.New("failed get used features name")
 	ErrCalcModelPrediction       = errors.New("failed inference model")
+	ErrNotSupported              = errors.New("supported only Linux and MacOS")
+	ErrLoadLibrary               = errors.New("failed loading CatBoost shared library")
+	ErrSetPredictionType         = errors.New("failed set prediction type")
 )
 
 var catboostSharedLibraryPath = ""
@@ -50,8 +54,14 @@ func SetSharedLibraryPath(path string) {
 	catboostSharedLibraryPath = path
 }
 
-func initialization() {
-	initSharedLibraryPath()
+func initialization() error {
+	if !checkPlatform() {
+		return ErrNotSupported
+	}
+
+	if err := initSharedLibraryPath(); err != nil {
+		return err
+	}
 
 	cName := C.CString(catboostSharedLibraryPath)
 	defer C.free(unsafe.Pointer(cName))
@@ -60,7 +70,7 @@ func initialization() {
 	if handle == nil {
 		C.dlclose(handle)
 		msg := C.GoString(C.dlerror())
-		panic(fmt.Sprintf("Error loading CatBoost shared library `%s`: %s", catboostSharedLibraryPath, msg))
+		return fmt.Errorf("%w `%s`: %s", ErrLoadLibrary, catboostSharedLibraryPath, msg)
 	}
 
 	// Load function from CatBoost shared library
@@ -75,30 +85,32 @@ func initialization() {
 	C.SetSetPredictionTypeStringFn(getFromLibraryFn(handle, "SetPredictionTypeString"))
 	C.SetGetModelUsedFeaturesNamesFn(getFromLibraryFn(handle, "GetModelUsedFeaturesNames"))
 	C.SetGetModelInfoValueFn(getFromLibraryFn(handle, "GetModelInfoValue"))
+
+	return nil
 }
 
-func initSharedLibraryPath() {
+func initSharedLibraryPath() error {
 	if catboostSharedLibraryPath != "" {
-		return
+		return nil
 	}
 
 	if catboostSharedLibraryPath = os.Getenv("CATBOOST_LIBRARY_PATH"); catboostSharedLibraryPath != "" {
-		return
+		return nil
 	}
 
 	catboostSharedLibraryPath = fmt.Sprintf("/usr/local/lib/libcatboostmodel.%s", getExt())
+	return nil
+}
+
+func checkPlatform() bool {
+	return slices.Contains([]string{"darwin", "linux"}, runtime.GOOS)
 }
 
 func getExt() string {
-	var ext string
+	ext := "dylib"
 
-	switch runtime.GOOS {
-	case "darwin":
-		ext = "dylib"
-	case "linux":
+	if runtime.GOOS == "linux" {
 		ext = "so"
-	default:
-		panic("supported only Linux and MacOS")
 	}
 
 	return ext
@@ -116,7 +128,9 @@ func LoadFullModelFromFile(filename string) (*Model, error) {
 
 // LoadFullModelFromBuffer returns load model from memory buffer into given model handle.
 func LoadFullModelFromBuffer(buffer []byte) (*Model, error) {
-	initialization()
+	if err := initialization(); err != nil {
+		return nil, err
+	}
 
 	handler := C.WrapModelCalcerCreate()
 
@@ -146,20 +160,22 @@ func (m *Model) GetModelInfoValue(key string) string {
 // SetPredictionType set prediction type for model evaluation.
 // Not use in concurrency mode!!!
 // Recommend set prediction type after load model.
-func (m *Model) SetPredictionType(p PredictionType) {
+func (m *Model) SetPredictionType(p PredictionType) error {
 	pC := C.CString(string(p))
 	defer C.free(unsafe.Pointer(pC))
 
 	if !C.WrapSetPredictionTypeString(m.handler, pC) {
-		panic(fmt.Sprintf("failed set prediction type `%s`: %s", p, getError()))
+		return fmt.Errorf("%w `%s`: %s", ErrSetPredictionType, p, getError())
 	}
 
 	m.predictionType = p
+
+	return nil
 }
 
 // GetModelUsedFeaturesNames returns names of features used in the model.
 func (m *Model) GetModelUsedFeaturesNames() ([]string, error) {
-	featuresCount := m.GetFloatFeaturesCount() + m.GetCatFeaturesCount()
+	featuresCount := m.GetFeaturesCount()
 
 	featuresC := C.makeCharArray1D(C.int(featuresCount))
 	defer C.freeCharArray1D(featuresC, C.int(featuresCount))
@@ -191,6 +207,11 @@ func (m *Model) GetCatFeaturesCount() int {
 	return int(C.WrapGetCatFeaturesCount(m.handler))
 }
 
+// GetFeaturesCount returns all expected feature count for model.
+func (m *Model) GetFeaturesCount() int {
+	return m.GetCatFeaturesCount() + m.GetFloatFeaturesCount()
+}
+
 // GetDimensionsCount returns number of dimensions in model.
 func (m *Model) GetDimensionsCount() int {
 	return int(C.WrapGetDimensionsCount(m.handler))
@@ -205,7 +226,7 @@ func (m *Model) GetRowResultSize() int {
 	return m.GetDimensionsCount()
 }
 
-// Predict returns `RawFormulaVal` predictions.
+// Predict returns predictions.
 func (m *Model) Predict(floats [][]float32, cats [][]string) ([]float64, error) {
 	nSamples := len(floats)
 	floatFeaturesCount := m.GetFloatFeaturesCount()
@@ -238,7 +259,7 @@ func (m *Model) Predict(floats [][]float32, cats [][]string) ([]float64, error) 
 	return preds, nil
 }
 
-// PredictSingle returns `RawFormulaVal` prediction.
+// PredictSingle returns prediction.
 func (m *Model) PredictSingle(floats []float32, cats []string) ([]float64, error) {
 	catsC := makeCharArray1D(cats)
 	defer C.freeCharArray1D(catsC, C.int(len(cats)))

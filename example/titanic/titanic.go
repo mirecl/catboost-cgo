@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/mirecl/catboost-cgo/catboost"
+	cb "github.com/mirecl/catboost-cgo/catboost"
 )
 
 func main() {
@@ -15,7 +15,7 @@ func main() {
 	modelPath := path.Join(filepath.Dir(fileName), "titanic.cbm")
 
 	// Initialize CatBoostClassifier
-	model, err := catboost.LoadFullModelFromFile(modelPath)
+	model, err := cb.LoadFullModelFromFile(modelPath)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -37,7 +37,7 @@ func main() {
 	}
 
 	// Get batch predicted Class
-	model.SetPredictionType(catboost.Class)
+	model.SetPredictionType(cb.Class)
 	preds, err := model.Predict(floats, cats)
 	if err != nil {
 		log.Fatalln(err)
@@ -45,7 +45,7 @@ func main() {
 	fmt.Printf("Preds `Class`: %.0f\n", preds)
 
 	// Get batch predicted Probability
-	model.SetPredictionType(catboost.Probablity)
+	model.SetPredictionType(cb.Probablity)
 	preds, err = model.Predict(floats, cats)
 	if err != nil {
 		log.Fatalln(err)

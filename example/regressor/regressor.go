@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/mirecl/catboost-cgo/catboost"
+	cb "github.com/mirecl/catboost-cgo/catboost"
 )
 
 func main() {
@@ -15,7 +15,7 @@ func main() {
 	modelPath := path.Join(filepath.Dir(fileName), "regressor.cbm")
 
 	// Initialize CatBoostRegressor
-	model, err := catboost.LoadFullModelFromFile(modelPath)
+	model, err := cb.LoadFullModelFromFile(modelPath)
 	if err != nil {
 		log.Fatalln(err)
 	}

@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/mirecl/catboost-cgo/catboost"
+	cb "github.com/mirecl/catboost-cgo/catboost"
 )
 
 func main() {
@@ -15,7 +15,7 @@ func main() {
 	modelPath := path.Join(filepath.Dir(fileName), "multiclassification.cbm")
 
 	// Initialize CatBoostClassifier
-	model, err := catboost.LoadFullModelFromFile(modelPath)
+	model, err := cb.LoadFullModelFromFile(modelPath)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -41,7 +41,7 @@ func main() {
 	fmt.Printf("Pred `RawFormulaVal`: %.8f\n", pred)
 
 	// Get batch predicted probabilities for each class
-	model.SetPredictionType(catboost.Probablity)
+	model.SetPredictionType(cb.Probablity)
 	preds, err = model.Predict(floats, cats)
 	if err != nil {
 		log.Fatalln(err)
@@ -58,7 +58,7 @@ func main() {
 	fmt.Printf("Pred `Probability`: %.8f\n", pred)
 
 	// Get batch predicted classes
-	model.SetPredictionType(catboost.Class)
+	model.SetPredictionType(cb.Class)
 	preds, err = model.Predict(floats, cats)
 	if err != nil {
 		log.Fatalln(err)
