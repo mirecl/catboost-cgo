@@ -92,11 +92,11 @@ go get github.com/mirecl/catboost-cgo
 
 ```go
 import (
- "github.com/mirecl/catboost-cgo/catboost"
+ cb "github.com/mirecl/catboost-cgo/catboost"
 )
 
 func main(){
-  catboost.SetSharedLibraryPath(...)
+  cb.SetSharedLibraryPath(...)
 }
 ```
 
