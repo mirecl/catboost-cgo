@@ -22,7 +22,7 @@ func main() {
 
 	// Initialize data
 	floats := [][]float32{{2, 4, 6, 8}, {1, 4, 50, 60}}
-	cats := [][]string{{}, {}}
+	cats := [][]string{{}}
 
 	// Get batch predictions
 	preds, err := model.Predict(floats, cats)
