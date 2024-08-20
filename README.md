@@ -8,7 +8,7 @@ The shared library:
 
 1) Should be in `/usr/local/lib`
 2) Or set path in environment `CATBOOST_LIBRARY_PATH`
-3) Or set manual in source code `SetSharedLibraryPath` (see example below)
+3) Or set path manual in source code `SetSharedLibraryPath` (see example below)
 
 For more information, see <https://catboost.ai/en/docs/concepts/c-plus-plus-api_dynamic-c-pluplus-wrapper>.
 
