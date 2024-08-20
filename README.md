@@ -91,9 +91,9 @@ Compatibility matrix version:
 **Supported type Features:**
 
 + Numeric ✅
-+ Categorical ✅ _(<https://catboost.ai/en/docs/features/categorical-features>)_
-+ Text 🚫 _(<https://catboost.ai/en/docs/features/text-features>)_
-+ Embeddings 🚫 _(<https://catboost.ai/en/docs/features/embeddings-features>)_
++ Categorical ✅ (<https://catboost.ai/en/docs/features/categorical-features>)
++ Text 🚫 (<https://catboost.ai/en/docs/features/text-features>)
++ Embeddings 🚫 (<https://catboost.ai/en/docs/features/embeddings-features>)
 
 ## Installation
 
