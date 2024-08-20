@@ -14,6 +14,8 @@ For more information, see <https://catboost.ai/en/docs/concepts/c-plus-plus-api_
 <table>
   <tr>
     <th>Previous versions</th>
+    <th>v1.2.2</th>
+    <th>v1.2.3</th>
     <th>v1.2.4</th>
     <th>v1.2.5</th>
   </tr>
@@ -21,21 +23,29 @@ For more information, see <https://catboost.ai/en/docs/concepts/c-plus-plus-api_
     <td align="center">🚫 (not testing)</td>
     <td align="center">✅</td>
     <td align="center">✅</td>
+    <td align="center">✅</td>
+    <td align="center">✅</td>
   </tr>
 </table>
 
+Compatibility matrix version:
 <table>
   <tr>
     <th>CatBoost</th>
     <th>CatBoost-Cgo</th>
   </tr>
   <tr>
+    <td align="center">v1.2.2</td>
+    <td rowspan=4 align="center">v0.1.0</td>
+  </tr>
+  <tr>
+    <td align="center">v1.2.3</td>
+  </tr>
+  <tr>
     <td align="center">v1.2.4</td>
-    <td align="center">v0.1.0</td>
   </tr>
   <tr>
     <td align="center">v1.2.5</td>
-    <td align="center">v0.1.0</td>
   </tr>
 </table>
 
@@ -77,6 +87,13 @@ For more information, see <https://catboost.ai/en/docs/concepts/c-plus-plus-api_
     <td>🚫</td>
   </tr>
 </table>
+
+**Supported type Features:**
+
++ Numeric ✅
++ Categorical ✅ _(<https://catboost.ai/en/docs/features/categorical-features>)_
++ Text 🚫 _(<https://catboost.ai/en/docs/features/text-features>)_
++ Embeddings 🚫 _(<https://catboost.ai/en/docs/features/embeddings-features>)_
 
 ## Installation
 
