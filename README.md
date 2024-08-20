@@ -4,7 +4,11 @@ Evaluation library is the fastest way for inference a model CatBoost. The librar
 The [C API](https://github.com/catboost/catboost/blob/master/catboost/libs/model_interface/c_api.h) interface can be accessed from any programming language (example Golang + [Cgo](https://go.dev/wiki/cgo)).
 
 Prebuilt shared library (`*.so` | `*.dylib`) artifacts are available of the [releases](https://github.com/catboost/catboost/releases) page on GitHub CatBoost project.\
-The shared library should be in `/usr/local/lib` or set path in environment `CATBOOST_LIBRARY_PATH`.
+The shared library:
+
+1) Should be in `/usr/local/lib`
+2) Set path in environment `CATBOOST_LIBRARY_PATH`
+3) Set manual in source code `SetSharedLibraryPath` (see example below)
 
 For more information, see <https://catboost.ai/en/docs/concepts/c-plus-plus-api_dynamic-c-pluplus-wrapper>.
 
