@@ -1,6 +1,6 @@
 black==24.8.0
 catboost==1.2.5
-numpy==1.24.4
+numpy==2.1.0
 pandas==2.2.2
 ruff==0.6.1
 scikit-learn==1.5.1
