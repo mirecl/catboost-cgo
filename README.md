@@ -7,8 +7,8 @@ Prebuilt shared library (`*.so` | `*.dylib`) artifacts are available of the [rel
 The shared library:
 
 1) Should be in `/usr/local/lib`
-2) Set path in environment `CATBOOST_LIBRARY_PATH`
-3) Set manual in source code `SetSharedLibraryPath` (see example below)
+2) Or set path in environment `CATBOOST_LIBRARY_PATH`
+3) Or set manual in source code `SetSharedLibraryPath` (see example below)
 
 For more information, see <https://catboost.ai/en/docs/concepts/c-plus-plus-api_dynamic-c-pluplus-wrapper>.
 
