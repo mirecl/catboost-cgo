@@ -9,7 +9,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      CATBOOST_LIBRARY_PATH: libcatboostmodel.so
+      CATBOOST_LIBRARY_PATH: ${{ github.workspace }}/libcatboostmodel.so
 
     steps:
       - uses: actions/checkout@v4
