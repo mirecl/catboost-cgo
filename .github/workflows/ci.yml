@@ -7,14 +7,16 @@ on:
 
 jobs:
   test:
-    runs-on: seemeai/catboost:1.2.5
+    runs-on: ubuntu-latest
+    env:
+      CATBOOST_LIBRARY_PATH: libcatboostmodel.so
+
     steps:
       - uses: actions/checkout@v4
 
-      # - name: Download CatBoost Library
-      #   run: |
-      #     sudo wget "https://github.com/catboost/catboost/releases/download/v1.2.5/libcatboostmodel.so" -O /usr/local/lib/libcatboostmodel.so
-      #     ls -la /usr/local/lib/
+      - name: Download CatBoost Library
+        run: |
+          wget "https://github.com/catboost/catboost/releases/download/v1.2.5/libcatboostmodel.so" -O libcatboostmodel.so
 
       - name: Set up Go
         uses: actions/setup-go@v4
@@ -23,4 +25,5 @@ jobs:
 
       - name: Test
         run: |
+          ls -la
           go test -v ./...
