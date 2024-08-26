@@ -7,6 +7,7 @@ on:
 
 jobs:
   Testing:
+    name: Check success run unit-tests
     runs-on: ubuntu-latest
     env:
       CGO_ENABLED: 1
