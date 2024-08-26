@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CATBOOST_LIBRARY_PATH: ${{ github.workspace }}/libcatboostmodel.so
+      CGO_ENABLED: 1
 
     steps:
       - uses: actions/checkout@v4
