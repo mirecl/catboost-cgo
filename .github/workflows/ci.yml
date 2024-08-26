@@ -31,4 +31,5 @@ jobs:
         run: |
           env
           ls -la
+          go build .
           go test -v ./...
