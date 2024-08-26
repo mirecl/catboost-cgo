@@ -12,9 +12,8 @@ The shared library:
 
 For more information, see <https://catboost.ai/en/docs/concepts/c-plus-plus-api_dynamic-c-pluplus-wrapper>.
 
-## Limitation
+## Compatibility
 
-**Supported CatBoost versions** (<https://github.com/catboost/catboost/releases>):
 <table>
   <tr>
     <th>Previous versions</th>
@@ -52,6 +51,8 @@ Compatibility matrix version:
     <td align="center">v1.2.5</td>
   </tr>
 </table>
+
+## Limitation
 
 **Supported functionality** (<https://catboost.ai/en/docs/concepts/python-quickstart>):
 
