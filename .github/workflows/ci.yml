@@ -23,6 +23,6 @@ jobs:
 
       - name: Test
         run: |
-          chmod 777 libcatboostmodel.so
+          sudo chmod 777 libcatboostmodel.so
           ls -la 
           CATBOOST_LIBRARY_PATH=libcatboostmodel.so go test -v ./...
