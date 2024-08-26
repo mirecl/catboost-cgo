@@ -5,22 +5,24 @@ on:
   pull_request:
     branches: ["master"]
 
-permissions:
-  contents: write
-
 jobs:
+  dep:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download CatBoost Library
+        run: |
+          sudo wget "https://github.com/catboost/catboost/releases/download/v1.2.5/libcatboostmodel.so" -O /usr/local/lib/libcatboostmodel.so
   test:
     runs-on: ubuntu-latest
     env:
-      # CATBOOST_LIBRARY_PATH: ${{ github.workspace }}/libcatboostmodel.so
       CGO_ENABLED: 1
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download CatBoost Library
-        run: |
-          wget "https://github.com/catboost/catboost/releases/download/v1.2.5/libcatboostmodel.so" -O /usr/local/lib/libcatboostmodel.so
+      # - name: Download CatBoost Library
+      #   run: |
+      #     sudo wget "https://github.com/catboost/catboost/releases/download/v1.2.5/libcatboostmodel.so" -O /usr/local/lib/libcatboostmodel.so
 
       - name: Set up Go
         uses: actions/setup-go@v4
