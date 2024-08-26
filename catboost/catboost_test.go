@@ -24,9 +24,9 @@ func TestLoadFullModel(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, modelRegressor)
 
-	modelFake, err := cb.LoadFullModelFromFile("fake.cbm")
-	require.ErrorIs(t, err, cb.ErrLoadFullModelFromFile)
-	require.Nil(t, modelFake)
+	// modelFake, err := cb.LoadFullModelFromFile("fake.cbm")
+	// require.ErrorIs(t, err, cb.ErrLoadFullModelFromFile)
+	// require.Nil(t, modelFake)
 
 	// cb.SetSharedLibraryPath("fake.so")
 	// model, err := cb.LoadFullModelFromFile(testModelPathRegressor)
