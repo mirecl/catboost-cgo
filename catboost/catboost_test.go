@@ -28,11 +28,11 @@ func TestLoadFullModel(t *testing.T) {
 	require.ErrorIs(t, err, cb.ErrLoadFullModelFromFile)
 	require.Nil(t, modelFake)
 
-	// cb.SetSharedLibraryPath("fake.so")
-	// model, err := cb.LoadFullModelFromFile(testModelPathRegressor)
-	// require.Nil(t, model)
-	// require.ErrorIs(t, err, cb.ErrLoadLibrary)
-	// cb.SetSharedLibraryPath("")
+	cb.SetSharedLibraryPath("fake.so")
+	model, err := cb.LoadFullModelFromFile(testModelPathRegressor)
+	require.Nil(t, model)
+	require.ErrorIs(t, err, cb.ErrLoadLibrary)
+	cb.SetSharedLibraryPath("")
 
 	// b := []byte("0")
 	// model, err = cb.LoadFullModelFromBuffer(b)
