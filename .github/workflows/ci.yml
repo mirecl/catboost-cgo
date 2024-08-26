@@ -6,7 +6,7 @@ on:
     branches: ["master"]
 
 jobs:
-  test:
+  Testing:
     runs-on: ubuntu-latest
     env:
       CGO_ENABLED: 1
