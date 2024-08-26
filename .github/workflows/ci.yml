@@ -13,7 +13,7 @@ jobs:
 
       - name: Download CatBoost Library
         run: |
-          sudo wget "https://github.com/catboost/catboost/releases/download/v1.2.5/libcatboostmodel.so" -O libcatboostmodel.so
+          sudo wget "https://github.com/catboost/catboost/releases/download/v1.2.5/libcatboostmodel.so" -O /usr/local/lib/libcatboostmodel.so
           ls -la /usr/local/lib/
 
       - name: Set up Go
@@ -23,6 +23,5 @@ jobs:
 
       - name: Test
         run: |
-          sudo chmod 777 libcatboostmodel.so
-          ls -la 
-          CATBOOST_LIBRARY_PATH=libcatboostmodel.so sudo go test -v ./...
+          sudo chmod 777 /usr/local/lib/libcatboostmodel.so
+          sudo go test -v ./...
