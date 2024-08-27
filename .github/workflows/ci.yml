@@ -38,6 +38,7 @@ jobs:
 
       - name: Download CatBoost Library
         run: |
+          ls -la /usr/local/
           sudo wget -q "https://github.com/catboost/catboost/releases/download/v1.2.5/libcatboostmodel.so" -O /usr/local/lib/libcatboostmodel.so
           sudo wget -q "https://github.com/catboost/catboost/releases/download/v1.2.5/libcatboostmodel.dylib" -O /usr/local/lib/libcatboostmodel.dylib
 
