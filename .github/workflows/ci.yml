@@ -26,8 +26,12 @@ jobs:
           go test -v ./...
 
   Inference:
-    runs-on: ubuntu-latest
     needs: [Testing]
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, macos-latest]
+
+    runs-on: ${{ matrix.platform }}
 
     steps:
       - uses: actions/checkout@v4
@@ -35,6 +39,7 @@ jobs:
       - name: Download CatBoost Library
         run: |
           sudo wget -q "https://github.com/catboost/catboost/releases/download/v1.2.5/libcatboostmodel.so" -O /usr/local/lib/libcatboostmodel.so
+          sudo wget -q "https://github.com/catboost/catboost/releases/download/v1.2.5/libcatboostmodel.dylib" -O /usr/local/lib/libcatboostmodel.dylib
 
       - name: Set up Go
         uses: actions/setup-go@v5
