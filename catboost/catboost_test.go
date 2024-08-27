@@ -95,7 +95,8 @@ func TestPredict(t *testing.T) {
 	for i, testCase := range testCases {
 		label := fmt.Sprintf("testCase[%d]", i)
 		t.Run(label, func(t *testing.T) {
-			testCase.model.SetPredictionType(testCase.predictType)
+			err := testCase.model.SetPredictionType(testCase.predictType)
+			require.NoError(t, err)
 
 			preds, err := testCase.model.Predict(testCase.floats, testCase.cats)
 			require.NoError(t, err)
