@@ -45,7 +45,7 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v4.8.0
         with:
-          python-version: "3.8"
+          python-version: "3.9"
 
       - name: Install Python requirements
         run: pip install -r requirements.txt
