@@ -23,7 +23,15 @@ jobs:
 
       - name: Run unit-tests
         run: |
-          go test -v ./...
+          go test -v ./... -coverprofile=tmp_coverage.out
+          cat tmp_coverage.out | grep -v example > coverage.out
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CI_CODECOV }}
+          file: ./coverage.out
+          fail_ci_if_error: true
 
   Inference:
     needs: [Testing]
@@ -43,7 +51,6 @@ jobs:
 
       - name: Download CatBoost Library
         run: |
-          ls -la /usr/local/
           sudo wget -q "https://github.com/catboost/catboost/releases/download/v1.2.5/libcatboostmodel.so" -O /usr/local/lib/libcatboostmodel.so
           sudo wget -q "https://github.com/catboost/catboost/releases/download/v1.2.5/libcatboostmodel.dylib" -O /usr/local/lib/libcatboostmodel.dylib
 
