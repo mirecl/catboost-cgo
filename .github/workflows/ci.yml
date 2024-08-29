@@ -5,9 +5,6 @@ on:
   pull_request:
     branches: ["master"]
 
-env:
-  CATBOOST_RELEASE_URL: https://github.com/catboost/catboost/releases/download/v1.2.5
-
 jobs:
   Linter:
     runs-on: ubuntu-latest
@@ -39,7 +36,7 @@ jobs:
 
       - name: Download library
         run: |
-          sudo wget -q "$CATBOOST_RELEASE_URL/libcatboostmodel.so" -O /usr/local/lib/libcatboostmodel.so
+          sudo wget -q "https://github.com/catboost/catboost/releases/download/v1.2.5/libcatboostmodel.so" -O /usr/local/lib/libcatboostmodel.so
 
       - name: Run tests
         run: |
@@ -69,12 +66,12 @@ jobs:
         if: matrix.platform == 'macos-latest'
         run: |
           sudo mkdir /usr/local/lib
-          sudo wget -q "$CATBOOST_RELEASE_URL/libcatboostmodel.dylib" -O /usr/local/lib/libcatboostmodel.dylib
+          sudo wget -q "https://github.com/catboost/catboost/releases/download/v1.2.5/libcatboostmodel.dylib" -O /usr/local/lib/libcatboostmodel.dylib
 
       - name: Configuration Linux
         if: matrix.platform == 'ubuntu-latest'
         run: |
-          sudo wget -q "$CATBOOST_RELEASE_URL/libcatboostmodel.so" -O /usr/local/lib/libcatboostmodel.so
+          sudo wget -q "https://github.com/catboost/catboost/releases/download/v1.2.5/libcatboostmodel.so" -O /usr/local/lib/libcatboostmodel.so
 
       - name: Set up Go
         uses: actions/setup-go@v5
