@@ -29,12 +29,17 @@ jobs:
     needs: [Testing]
     strategy:
       matrix:
-        platform: [ubuntu-latest]
+        platform: [ubuntu-latest, macos-latest]
 
     runs-on: ${{ matrix.platform }}
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Configuration for MacOS
+        if: matrix.platform == 'macos-latest'
+        run: |
+          sudo mkdir /usr/local/lib
 
       - name: Download CatBoost Library
         run: |
