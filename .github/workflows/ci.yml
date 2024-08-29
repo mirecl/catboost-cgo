@@ -63,7 +63,7 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v5.1.1
         with:
-          python-version: "3.9"
+          python-version-file: ".python-version"
 
       - name: Install requirements
         run: pip install -r requirements.txt
