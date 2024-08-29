@@ -1,3 +1,5 @@
+[![CI](https://github.com/mirecl/catboost-cgo/actions/workflows/ci.yml/badge.svg)](https://github.com/mirecl/catboost-cgo/actions/workflows/ci.yml)
+
 ## CatBoost-Cgo
 
 Evaluation library is the fastest way for inference a model CatBoost. The library provides a [C API](https://github.com/catboost/catboost/blob/master/catboost/libs/model_interface/c_api.h).\
