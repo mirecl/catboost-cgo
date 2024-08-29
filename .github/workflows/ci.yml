@@ -86,7 +86,15 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Train (Python)
-        run: make train
+        run: |
+          python example/classifier/classifier.py 
+          python example/regressor/regressor.py 
+          python example/multiclassification/multiclassification.py 
+          python example/metadata/metadata.py
 
       - name: Predict (Golang)
-        run: make predict
+        run: |
+          go run example/classifier/classifier.go
+          go run example/regressor/regressor.go
+          go run example/multiclassification/multiclassification.go
+          go run example/metadata/metadata.go
