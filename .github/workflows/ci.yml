@@ -42,6 +42,7 @@ jobs:
         run: |
           go test -v ./... -coverprofile=tmp_coverage.out
           cat tmp_coverage.out | grep -v example > coverage.out
+          rm tmp_coverage.out
 
       - name: Upload coverage
         uses: codecov/codecov-action@v4
