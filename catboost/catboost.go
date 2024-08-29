@@ -31,7 +31,7 @@ const formatErrorMessage = "%w: %v"
 // https://catboost.ai/en/docs/concepts/python-reference_catboost_metadata
 const (
 	MetaVersionInfo     = "catboost_version_info"
-	MetaModelGuid       = "model_guid"
+	MetaModelGUID       = "model_guid"
 	MetaParams          = "params"
 	MetaTrainFinishTime = "train_finish_time"
 	MetaTraining        = "training"
@@ -316,14 +316,14 @@ func getFromLibraryFn(handle unsafe.Pointer, fnName string) unsafe.Pointer {
 	return fn
 }
 
-// If error occured will return stored exception message.
-// If no error occured, will return invalid pointer
+// If error ocured will return stored exception message.
+// If no error ocured, will return invalid pointer
 func getError() error {
 	messageC := C.WrapGetErrorString()
 	message := C.GoString(messageC)
 
 	i := strings.Index(message, "catboost.git")
-	return fmt.Errorf(message[i:])
+	return errors.New(message[i:])
 }
 
 // Helper for create convert [][]string to `C`.

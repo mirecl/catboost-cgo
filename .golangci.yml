@@ -1,0 +1,71 @@
+run:
+  concurrency: 1
+  timeout: 1m
+  tests: false
+
+issues:
+  exclude-dirs:
+    - example
+  max-issues-per-linter: 100
+  max-same-issues: 100
+  exclude-use-default: false
+  exclude-rules:
+    - linters:
+        - revive
+      text: "package-comments:"
+    - linters:
+        - gocritic
+      text: "dupSubExpr:"
+  exclude:
+    - "ST1000: at least one file in a package should have a package comment"
+
+linters-settings:
+  funlen:
+    lines: 80
+
+  staticcheck:
+    checks: ["all"]
+
+  dupl:
+    threshold: 50
+
+  dogsled:
+    max-blank-identifiers: 2
+
+  govet:
+    enable-all: true
+
+linters:
+  disable-all: true
+  enable:
+    - dogsled
+    - dupl
+    - errcheck
+    - copyloopvar
+    - funlen
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - goimports
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - godot
+    - ineffassign
+    - lll
+    - misspell
+    - nakedret
+    - rowserrcheck
+    - staticcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - whitespace
+
+  presets:
+    - comment
+    - unused

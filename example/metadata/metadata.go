@@ -31,7 +31,7 @@ func main() {
 	exampleValue := model.GetModelInfoValue("example_key")
 	fmt.Printf("EXAMPLE_KEY:\n%s\n\n", exampleValue)
 
-	modelGuid := model.GetModelInfoValue(cb.MetaModelGuid)
+	modelGuid := model.GetModelInfoValue(cb.MetaModelGUID)
 	fmt.Printf("MODEL_GUID:\n%s\n\n", modelGuid)
 
 	params := model.GetModelInfoValue(cb.MetaParams)

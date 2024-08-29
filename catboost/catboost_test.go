@@ -116,7 +116,9 @@ func TestTransform(t *testing.T) {
 
 	preds := []float64{1, 2, 3, 4, 5, 6}
 
-	modelMulticlassification.SetPredictionType(cb.Probablity)
+	err = modelMulticlassification.SetPredictionType(cb.Probablity)
+	require.NoError(t, err)
+
 	result := modelMulticlassification.Transform(preds)
 	require.Equal(t, [][]float64{{1, 2, 3}, {4, 5, 6}}, result)
 }
@@ -132,7 +134,7 @@ func TestMetadata(t *testing.T) {
 	require.Equal(t, []string{"Column=0", "Column=1", "Column=2", "Column=3", "Column=4", "Column=5", "Column=6", "Column=7", "Column=8", "Column=9", "CatColumn_1", "CatColumn_2"}, featuresNames)
 	require.Equal(t, 2, modelMetadata.GetCatFeaturesCount())
 	require.Equal(t, 10, modelMetadata.GetFloatFeaturesCount())
-	require.NotEmpty(t, modelMetadata.GetModelInfoValue(cb.MetaModelGuid))
+	require.NotEmpty(t, modelMetadata.GetModelInfoValue(cb.MetaModelGUID))
 	require.NotEmpty(t, modelMetadata.GetModelInfoValue(cb.MetaOutputOptions))
 	require.NotEmpty(t, modelMetadata.GetModelInfoValue(cb.MetaParams))
 	require.NotEmpty(t, modelMetadata.GetModelInfoValue(cb.MetaTrainFinishTime))
