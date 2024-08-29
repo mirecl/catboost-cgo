@@ -17,7 +17,7 @@ jobs:
         with:
           go-version: "1.22"
 
-      - name: Download CatBoost Library
+      - name: Download library
         run: |
           sudo wget -q "https://github.com/catboost/catboost/releases/download/v1.2.5/libcatboostmodel.so" -O /usr/local/lib/libcatboostmodel.so
 
@@ -44,12 +44,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Configuration for MacOS
+      - name: Configuration
         if: matrix.platform == 'macos-latest'
         run: |
           sudo mkdir /usr/local/lib
 
-      - name: Download CatBoost Library
+      - name: Download library
         run: |
           sudo wget -q "https://github.com/catboost/catboost/releases/download/v1.2.5/libcatboostmodel.so" -O /usr/local/lib/libcatboostmodel.so
           sudo wget -q "https://github.com/catboost/catboost/releases/download/v1.2.5/libcatboostmodel.dylib" -O /usr/local/lib/libcatboostmodel.dylib
@@ -65,7 +65,7 @@ jobs:
         with:
           python-version: "3.9"
 
-      - name: Install Python requirements
+      - name: Install requirements
         run: pip install -r requirements.txt
 
       - name: Train (Python)
