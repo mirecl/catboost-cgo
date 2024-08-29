@@ -23,7 +23,7 @@ jobs:
           version: v1.60.3
 
   Test:
-    needs: [Linters]
+    needs: [Linter]
     runs-on: ubuntu-latest
 
     steps:
