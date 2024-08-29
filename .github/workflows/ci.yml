@@ -6,7 +6,7 @@ on:
     branches: ["master"]
 
 jobs:
-  Linters:
+  Linter:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +22,8 @@ jobs:
         with:
           version: v1.60.3
 
-  Testing:
+  Test:
+    needs: [Linters]
     runs-on: ubuntu-latest
 
     steps:
@@ -50,7 +51,7 @@ jobs:
           fail_ci_if_error: true
 
   Inference:
-    needs: [Testing]
+    needs: [Test]
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-latest]
