@@ -1,4 +1,4 @@
-![](https://img.shields.io/github/go-mod/go-version/mirecl/catboost-cgo) [![CI](https://github.com/mirecl/catboost-cgo/actions/workflows/ci.yml/badge.svg)](https://github.com/mirecl/catboost-cgo/actions/workflows/ci.yml)
+![](https://img.shields.io/github/go-mod/go-version/mirecl/catboost-cgo) [![CI](https://github.com/mirecl/catboost-cgo/actions/workflows/ci.yml/badge.svg)](https://github.com/mirecl/catboost-cgo/actions/workflows/ci.yml) [![codecov](https://codecov.io/github/mirecl/catboost-cgo/graph/badge.svg?token=HUG4WWSSZN)](https://codecov.io/github/mirecl/catboost-cgo)
 
 ## CatBoost-Cgo
 
