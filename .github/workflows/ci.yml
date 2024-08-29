@@ -21,7 +21,7 @@ jobs:
         run: |
           sudo wget -q "https://github.com/catboost/catboost/releases/download/v1.2.5/libcatboostmodel.so" -O /usr/local/lib/libcatboostmodel.so
 
-      - name: Run unit-tests
+      - name: Run tests
         run: |
           go test -v ./... -coverprofile=tmp_coverage.out
           cat tmp_coverage.out | grep -v example > coverage.out
