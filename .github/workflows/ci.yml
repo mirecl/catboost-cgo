@@ -94,6 +94,8 @@ jobs:
           python example/regressor/regressor.py 
           python example/multiclassification/multiclassification.py 
           python example/metadata/metadata.py
+          python example/ranker/ranker.py
+          python example/survival/survival.py
 
       - name: Predict (Golang)
         run: |
@@ -101,3 +103,5 @@ jobs:
           go run example/regressor/regressor.go
           go run example/multiclassification/multiclassification.go
           go run example/metadata/metadata.go
+          go run example/ranker/ranker.go
+          go run example/survival/survival.go
