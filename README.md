@@ -35,27 +35,6 @@ For more information, see <https://catboost.ai/en/docs/concepts/c-plus-plus-api_
   </tr>
 </table>
 
-Compatibility matrix version:
-<table>
-  <tr>
-    <th>CatBoost</th>
-    <th>CatBoost-Cgo</th>
-  </tr>
-  <tr>
-    <td align="center">v1.2.2</td>
-    <td rowspan=4 align="center">v0.1.0<br>v0.2.0</td>
-  </tr>
-  <tr>
-    <td align="center">v1.2.3</td>
-  </tr>
-  <tr>
-    <td align="center">v1.2.4</td>
-  </tr>
-  <tr>
-    <td align="center">v1.2.5</td>
-  </tr>
-</table>
-
 ## Features
 
 **Supported functionality** (<https://catboost.ai/en/docs/concepts/python-quickstart>):
