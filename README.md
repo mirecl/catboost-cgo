@@ -56,7 +56,7 @@ Compatibility matrix version:
   </tr>
 </table>
 
-## Limitation
+## Features
 
 **Supported functionality** (<https://catboost.ai/en/docs/concepts/python-quickstart>):
 
@@ -71,6 +71,8 @@ Compatibility matrix version:
 + Class ✅
 + RMSEWithUncertainty ✅
 + Exponent ✅
+
+## Limitation
 
 **Supported operating system and architectures:**
 <table>
