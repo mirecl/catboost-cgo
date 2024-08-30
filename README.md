@@ -43,7 +43,7 @@ Compatibility matrix version:
   </tr>
   <tr>
     <td align="center">v1.2.2</td>
-    <td rowspan=4 align="center">v0.1.0</td>
+    <td rowspan=4 align="center">v0.1.0<br>v0.2.0</td>
   </tr>
   <tr>
     <td align="center">v1.2.3</td>
