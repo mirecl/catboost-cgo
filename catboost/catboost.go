@@ -21,9 +21,10 @@ import (
 type PredictionType string
 
 const (
-	RawFormulaVal PredictionType = "RawFormulaVal"
-	Probablity    PredictionType = "Probability"
-	Class         PredictionType = "Class"
+	RawFormulaVal       PredictionType = "RawFormulaVal"
+	Probablity          PredictionType = "Probability"
+	Class               PredictionType = "Class"
+	RMSEWithUncertainty PredictionType = "RMSEWithUncertainty"
 )
 
 const formatErrorMessage = "%w: %v"
@@ -232,7 +233,14 @@ func (m *Model) GetRowResultSize() int {
 
 // Predict returns predictions.
 func (m *Model) Predict(floats [][]float32, cats [][]string) ([]float64, error) {
-	nSamples := len(floats)
+	var nSamples int
+
+	// Get length sample
+	nSamples = len(floats)
+	if nSamples == 0 {
+		nSamples = len(cats)
+	}
+
 	floatFeaturesCount := m.GetFloatFeaturesCount()
 	catFeaturesCount := m.GetCatFeaturesCount()
 
