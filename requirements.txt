@@ -4,5 +4,5 @@ numpy==1.24.4
 pandas==2.2.2
 ruff==0.6.2
 scikit-learn==1.5.1
-scikit-survival==0.22.2
+scikit-survival==0.23.0
 
