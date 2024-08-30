@@ -17,10 +17,25 @@ jobs:
         with:
           go-version-file: "go.mod"
 
+      - name: Set up Python
+        id: setup-python
+        uses: actions/setup-python@v5.1.1
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install requirements
+        run: pip install -r requirements.txt
+
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v6
         with:
           version: v1.60.3
+
+      - name: Black
+        run: black example --check
+
+      - name: Ruff
+        run: ruff check --select=F example
 
   Test:
     needs: [Linter]
@@ -79,7 +94,7 @@ jobs:
         with:
           go-version-file: "go.mod"
 
-      - name: Set up python
+      - name: Set up Python
         id: setup-python
         uses: actions/setup-python@v5.1.1
         with:
