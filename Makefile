@@ -13,6 +13,9 @@ train:
 	@echo ""
 	@echo "Uncertainty"
 	@python example/uncertainty/uncertainty.py 
+	@echo ""
+	@echo "Survival"
+	@python example/survival/survival.py 
 
 predict:
 	@echo "Classifier"
@@ -29,3 +32,6 @@ predict:
 	@echo ""
 	@echo "Uncertainty"
 	@go run example/uncertainty/uncertainty.go
+	@echo ""
+	@echo "Survival"
+	@go run example/survival/survival.go

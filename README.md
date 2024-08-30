@@ -70,7 +70,7 @@ Compatibility matrix version:
 + Probability ✅
 + Class ✅
 + RMSEWithUncertainty ✅
-+ Exponent 🚫
++ Exponent ✅
 + MultiProbability 🚫
 
 **Supported operating system and architectures:**
@@ -135,6 +135,8 @@ func main(){
 + [Multiclassification](example/multiclassification)
 + [Titanic](example/titanic)
 + [Metadata](example/metadata)
++ [Uncertainty](example/uncertainty)
++ [Survival](example/survival)
 
 ### Thanks
 

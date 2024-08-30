@@ -25,6 +25,7 @@ const (
 	Probablity          PredictionType = "Probability"
 	Class               PredictionType = "Class"
 	RMSEWithUncertainty PredictionType = "RMSEWithUncertainty"
+	Exponent            PredictionType = "Exponent"
 )
 
 const formatErrorMessage = "%w: %v"

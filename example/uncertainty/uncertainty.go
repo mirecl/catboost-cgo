@@ -27,6 +27,7 @@ func main() {
 	floats := [][]float32{}
 	cats := [][]string{{"0", "0"}}
 
+	// Get batch predicted RMSEWithUncertainty
 	preds, err := model.Predict(floats, cats)
 	if err != nil {
 		log.Fatalln(err)
