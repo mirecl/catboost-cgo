@@ -98,7 +98,7 @@ Compatibility matrix version:
   </tr>
 </table>
 
-**Supported type Features:**
+**Supported Type:**
 
 + Numeric ✅
 + Categorical ✅ (<https://catboost.ai/en/docs/features/categorical-features>)
