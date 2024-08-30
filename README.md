@@ -62,7 +62,7 @@ Compatibility matrix version:
 
 + CatBoostRegressor ✅
 + CatBoostClassifier ✅
-+ CatBoostRanker 🚫 (not testing)
++ CatBoostRanker ✅
 
 **Supported prediction types** (<https://github.com/catboost/catboost/blob/master/catboost/libs/model/enums.h>):
 
@@ -71,7 +71,6 @@ Compatibility matrix version:
 + Class ✅
 + RMSEWithUncertainty ✅
 + Exponent ✅
-+ MultiProbability 🚫
 
 **Supported operating system and architectures:**
 <table>
@@ -133,6 +132,7 @@ func main(){
 + [Regression](example/regressor)
 + [Binary classification](example/classifier)
 + [Multiclassification](example/multiclassification)
++ [Ranker](example/ranker)
 + [Titanic](example/titanic)
 + [Metadata](example/metadata)
 + [Uncertainty](example/uncertainty)

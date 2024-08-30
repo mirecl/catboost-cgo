@@ -14,7 +14,7 @@ func main() {
 	_, fileName, _, _ := runtime.Caller(0)
 	modelPath := path.Join(filepath.Dir(fileName), "survival.cbm")
 
-	// Initialize CatBoostClassifier
+	// Initialize CatBoostRegressor
 	model, err := cb.LoadFullModelFromFile(modelPath)
 	if err != nil {
 		log.Fatalln(err)
