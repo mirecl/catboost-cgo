@@ -103,7 +103,6 @@ func initSharedLibraryPath() {
 	}
 
 	catboostSharedLibraryPath = fmt.Sprintf("/usr/local/lib/libcatboostmodel.%s", getExt())
-	return
 }
 
 func checkPlatform() bool {
