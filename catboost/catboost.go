@@ -141,7 +141,7 @@ func LoadFullModelFromBuffer(buffer []byte) (*Model, error) {
 	handler := C.WrapModelCalcerCreate()
 
 	if !C.WrapLoadFullModelFromBuffer(handler, unsafe.Pointer(&buffer[0]), C.size_t(len(buffer))) {
-		return nil, fmt.Errorf(formatErrorMessage, ErrLoadFullModelFromBuffer, getError())
+		return nil, fmt.Errorf(formatErrorMessage, ErrLoadFullModelFromBuffer, GetError())
 	}
 
 	return &Model{handler: handler, predictionType: RawFormulaVal}, nil
@@ -171,7 +171,7 @@ func (m *Model) SetPredictionType(p PredictionType) error {
 	defer C.free(unsafe.Pointer(pC))
 
 	if !C.WrapSetPredictionTypeString(m.handler, pC) {
-		return fmt.Errorf("%w `%s`: %s", ErrSetPredictionType, p, getError())
+		return fmt.Errorf("%w `%s`: %s", ErrSetPredictionType, p, GetError())
 	}
 
 	m.predictionType = p
@@ -188,7 +188,7 @@ func (m *Model) GetModelUsedFeaturesNames() ([]string, error) {
 
 	featuresCountC := C.size_t(featuresCount)
 	if !C.WrapGetModelUsedFeaturesNames(m.handler, &featuresC, &featuresCountC) {
-		return nil, fmt.Errorf(formatErrorMessage, ErrGetModelUsedFeaturesNames, getError())
+		return nil, fmt.Errorf(formatErrorMessage, ErrGetModelUsedFeaturesNames, GetError())
 	}
 
 	features := make([]string, 0, featuresCount)
@@ -266,7 +266,7 @@ func (m *Model) Predict(floats [][]float32, cats [][]string) ([]float64, error) 
 		(*C.double)(&preds[0]),
 		C.size_t(len(preds)),
 	) {
-		return nil, fmt.Errorf(formatErrorMessage, ErrCalcModelPrediction, getError())
+		return nil, fmt.Errorf(formatErrorMessage, ErrCalcModelPrediction, GetError())
 	}
 
 	return preds, nil
@@ -288,7 +288,7 @@ func (m *Model) PredictSingle(floats []float32, cats []string) ([]float64, error
 		C.size_t(len(cats)),
 		(*C.double)(&preds[0]),
 		C.size_t(len(preds))) {
-		return nil, fmt.Errorf("%s", getError())
+		return nil, fmt.Errorf("%s", GetError())
 	}
 
 	return preds, nil
@@ -325,13 +325,18 @@ func getFromLibraryFn(handle unsafe.Pointer, fnName string) unsafe.Pointer {
 	return fn
 }
 
+// GetError returns last error from model.
 // If error ocured will return stored exception message.
 // If no error ocured, will return invalid pointer
-func getError() error {
+func GetError() error {
 	messageC := C.WrapGetErrorString()
 	message := C.GoString(messageC)
 
 	i := strings.Index(message, "catboost.git")
+	if i == -1 {
+		return nil
+	}
+
 	return errors.New(message[i:])
 }
 

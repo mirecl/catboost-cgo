@@ -141,3 +141,12 @@ func TestMetadata(t *testing.T) {
 	require.NotEmpty(t, modelMetadata.GetModelInfoValue(cb.MetaTraining))
 	require.NotEmpty(t, modelMetadata.GetModelInfoValue(cb.MetaVersionInfo))
 }
+
+func TestGetError(t *testing.T) {
+	// init test model
+	_, err := cb.LoadFullModelFromFile(testModelPathMetadata)
+	require.NoError(t, err)
+
+	err = cb.GetError()
+	require.NoError(t, err)
+}
