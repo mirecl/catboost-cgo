@@ -65,9 +65,7 @@ func initialization() error {
 		return ErrNotSupported
 	}
 
-	if err := initSharedLibraryPath(); err != nil {
-		return err
-	}
+	initSharedLibraryPath()
 
 	cName := C.CString(catboostSharedLibraryPath)
 	defer C.free(unsafe.Pointer(cName))
@@ -95,17 +93,17 @@ func initialization() error {
 	return nil
 }
 
-func initSharedLibraryPath() error {
+func initSharedLibraryPath() {
 	if catboostSharedLibraryPath != "" {
-		return nil
+		return
 	}
 
 	if catboostSharedLibraryPath = os.Getenv("CATBOOST_LIBRARY_PATH"); catboostSharedLibraryPath != "" {
-		return nil
+		return
 	}
 
 	catboostSharedLibraryPath = fmt.Sprintf("/usr/local/lib/libcatboostmodel.%s", getExt())
-	return nil
+	return
 }
 
 func checkPlatform() bool {
