@@ -6,7 +6,7 @@
 
 #define CATBOOST_APPLIER_MAJOR 1
 #define CATBOOST_APPLIER_MINOR 2
-#define CATBOOST_APPLIER_FIX 5
+#define CATBOOST_APPLIER_FIX 6
 
 #if defined(__cplusplus)
 extern "C" {
@@ -53,6 +53,7 @@ enum EApiPredictionType {
     APT_RMSE_WITH_UNCERTAINTY = 2,
     APT_PROBABILITY = 3,
     APT_CLASS = 4,
+    APT_MULTI_PROBABILITY = 5,
 };
 
 enum ECatBoostApiFormulaEvaluatorType {
@@ -102,7 +103,7 @@ CATBOOST_API bool LoadFullModelFromBuffer(
     size_t binaryBufferSize);
 
 /**
- * Use CUDA gpu device for model evaluation
+ * Use CUDA GPU device for model evaluation
 */
 CATBOOST_API bool EnableGPUEvaluation(ModelCalcerHandle* modelHandle, int deviceId);
 
