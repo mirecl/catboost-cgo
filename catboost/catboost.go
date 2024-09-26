@@ -77,20 +77,57 @@ func initialization() error {
 		return fmt.Errorf("%w `%s`: %s", ErrLoadLibrary, catboostSharedLibraryPath, msg)
 	}
 
+	l := library{handle}
+
 	// Load function from CatBoost shared library
-	C.SetModelCalcerCreateFn(getFromLibraryFn(handle, "ModelCalcerCreate"))
-	C.SetLoadFullModelFromBufferFn(getFromLibraryFn(handle, "LoadFullModelFromBuffer"))
-	C.SetCalcModelPredictionSingleFn(getFromLibraryFn(handle, "CalcModelPredictionSingle"))
-	C.SetCalcModelPredictionFn(getFromLibraryFn(handle, "CalcModelPrediction"))
-	C.SetGetErrorStringFn(getFromLibraryFn(handle, "GetErrorString"))
-	C.SetGetFloatFeaturesCountFn(getFromLibraryFn(handle, "GetFloatFeaturesCount"))
-	C.SetGetCatFeaturesCountFn(getFromLibraryFn(handle, "GetCatFeaturesCount"))
-	C.SetGetDimensionsCountFn(getFromLibraryFn(handle, "GetDimensionsCount"))
-	C.SetSetPredictionTypeStringFn(getFromLibraryFn(handle, "SetPredictionTypeString"))
-	C.SetGetModelUsedFeaturesNamesFn(getFromLibraryFn(handle, "GetModelUsedFeaturesNames"))
-	C.SetGetModelInfoValueFn(getFromLibraryFn(handle, "GetModelInfoValue"))
+	l.RegisterFn("ModelCalcerCreate")
+	l.RegisterFn("LoadFullModelFromBuffer")
+	l.RegisterFn("CalcModelPredictionSingle")
+	l.RegisterFn("CalcModelPrediction")
+	l.RegisterFn("GetErrorString")
+	l.RegisterFn("GetFloatFeaturesCount")
+	l.RegisterFn("GetCatFeaturesCount")
+	l.RegisterFn("GetDimensionsCount")
+	l.RegisterFn("SetPredictionTypeString")
+	l.RegisterFn("GetModelUsedFeaturesNames")
+	l.RegisterFn("GetModelInfoValue")
 
 	return nil
+}
+
+type library struct {
+	handle unsafe.Pointer
+}
+
+func (l *library) RegisterFn(fnName string) {
+	fnC := getFromLibraryFn(l.handle, fnName)
+
+	switch fnName {
+	case "ModelCalcerCreate":
+		C.SetModelCalcerCreateFn(fnC)
+	case "LoadFullModelFromBuffer":
+		C.SetLoadFullModelFromBufferFn(fnC)
+	case "CalcModelPredictionSingle":
+		C.SetCalcModelPredictionSingleFn(fnC)
+	case "CalcModelPrediction":
+		C.SetCalcModelPredictionFn(fnC)
+	case "GetErrorString":
+		C.SetGetErrorStringFn(fnC)
+	case "GetFloatFeaturesCount":
+		C.SetGetFloatFeaturesCountFn(fnC)
+	case "GetCatFeaturesCount":
+		C.SetGetCatFeaturesCountFn(fnC)
+	case "SetPredictionTypeString":
+		C.SetSetPredictionTypeStringFn(fnC)
+	case "GetDimensionsCount":
+		C.SetGetDimensionsCountFn(fnC)
+	case "GetModelUsedFeaturesNames":
+		C.SetGetModelUsedFeaturesNamesFn(fnC)
+	case "GetModelInfoValue":
+		C.SetGetModelInfoValueFn(fnC)
+	default:
+		panic(fmt.Sprintf("not supported function from catboost library: %s", fnName))
+	}
 }
 
 func initSharedLibraryPath() {
