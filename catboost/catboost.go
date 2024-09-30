@@ -321,9 +321,14 @@ func (m *Model) PredictSingle(floats []float32, cats []string) ([]float64, error
 	size := m.GetRowResultSize()
 	preds := make([]float64, 1*size)
 
+	floatsC := new(C.float)
+	if len(floats) > 0 {
+		floatsC = (*C.float)(&floats[0])
+	}
+
 	if !C.WrapCalcModelPredictionSingle(
 		m.handler,
-		(*C.float)(&floats[0]),
+		floatsC,
 		C.size_t(len(floats)),
 		catsC,
 		C.size_t(len(cats)),
