@@ -48,6 +48,7 @@ var (
 	ErrNotSupported              = errors.New("supported only Linux and MacOS")
 	ErrLoadLibrary               = errors.New("failed loading CatBoost shared library")
 	ErrSetPredictionType         = errors.New("failed set prediction type")
+	ErrGetIndices                = errors.New("failed get indices")
 )
 
 var catboostSharedLibraryPath = ""
@@ -91,6 +92,8 @@ func initialization() error {
 	l.RegisterFn("SetPredictionTypeString")
 	l.RegisterFn("GetModelUsedFeaturesNames")
 	l.RegisterFn("GetModelInfoValue")
+	l.RegisterFn("GetCatFeatureIndices")
+	l.RegisterFn("GetFloatFeatureIndices")
 
 	return nil
 }
@@ -125,6 +128,10 @@ func (l *library) RegisterFn(fnName string) {
 		C.SetGetModelUsedFeaturesNamesFn(fnC)
 	case "GetModelInfoValue":
 		C.SetGetModelInfoValueFn(fnC)
+	case "GetCatFeatureIndices":
+		C.SetGetCatFeatureIndicesFn(fnC)
+	case "GetFloatFeatureIndices":
+		C.SetGetFloatFeatureIndicesFn(fnC)
 	default:
 		panic(fmt.Sprintf("not supported function from catboost library: %s", fnName))
 	}
@@ -342,6 +349,44 @@ func (m *Model) Transform(preds []float64) [][]float64 {
 	}
 
 	return result
+}
+
+// GetCatFeatureIndices expected indices of category features used in the model.
+func (m *Model) GetCatFeatureIndices() ([]uint64, error) {
+	catsFeatureNum := uint64(m.GetCatFeaturesCount())
+	if catsFeatureNum == 0 {
+		return []uint64{}, nil
+	}
+
+	catsFeatureIndices := make([]*uint64, catsFeatureNum)
+	catsFeatureIndicesC := (*C.size_t)(catsFeatureIndices[0])
+	defer C.free(unsafe.Pointer(catsFeatureIndicesC))
+
+	if !C.WrapGetCatFeatureIndices(m.handler, &catsFeatureIndicesC, (*C.size_t)(&catsFeatureNum)) {
+		return []uint64{}, ErrGetIndices
+	}
+
+	indices := (*[1 << 28]uint64)(unsafe.Pointer(catsFeatureIndicesC))[:catsFeatureNum:catsFeatureNum]
+	return indices, nil
+}
+
+// GetFloatFeatureIndices expected indices of float features used in the model.
+func (m *Model) GetFloatFeatureIndices() ([]uint64, error) {
+	floatsFeatureNum := uint64(m.GetFloatFeaturesCount())
+	if floatsFeatureNum == 0 {
+		return []uint64{}, nil
+	}
+
+	floatsFeatureIndices := make([]*uint64, floatsFeatureNum)
+	floatsFeatureIndicesC := (*C.size_t)(floatsFeatureIndices[0])
+	defer C.free(unsafe.Pointer(floatsFeatureIndicesC))
+
+	if !C.WrapGetFloatFeatureIndices(m.handler, &floatsFeatureIndicesC, (*C.size_t)(&floatsFeatureNum)) {
+		return []uint64{}, ErrGetIndices
+	}
+
+	indices := (*[1 << 28]uint64)(unsafe.Pointer(floatsFeatureIndicesC))[:floatsFeatureNum:floatsFeatureNum]
+	return indices, nil
 }
 
 // getFromLibraryFn retruns point to function from CatBoost shared memory.

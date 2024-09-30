@@ -45,4 +45,16 @@ func main() {
 		log.Fatalln(err)
 	}
 	fmt.Printf("Used Features names: %v\n", features)
+
+	catIndices, err := model.GetCatFeatureIndices()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Printf("Used Cat Features Indices: %v\n", catIndices)
+
+	floatIndices, err := model.GetFloatFeatureIndices()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Printf("Used Float Features Indices: %v\n", floatIndices)
 }

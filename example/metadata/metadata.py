@@ -38,6 +38,8 @@ for key, value in metadata.items():
     print(f"{key.upper()}:\n{value}\n")
 
 print(f"Used Features names: {model.feature_names_}")
+print(f"Used Cat Features Indices: {model.get_cat_feature_indices()}")
+print(f"Used Float Features Indices: {model._get_float_feature_indices()}")
 
 # Save model
 model.save_model(f"{path}/metadata.cbm")

@@ -11,6 +11,8 @@ static TypeGetDimensionsCount GetDimensionsCountFn = NULL;
 static TypeSetPredictionTypeString SetPredictionTypeStringFn = NULL;
 static TypeGetModelUsedFeaturesNames GetModelUsedFeaturesNamesFn = NULL;
 static TypeGetModelInfoValue GetModelInfoValueFn = NULL;
+static TypeGetCatFeatureIndices GetCatFeatureIndicesFn = NULL;
+static TypeGetFloatFeatureIndices GetFloatFeatureIndicesFn = NULL;
 
 const char* WrapGetErrorString() {
 	return GetErrorStringFn();
@@ -41,6 +43,14 @@ bool WrapCalcModelPrediction(
     const char*** catFeatures, size_t catFeaturesSize,
     double* result, size_t resultSize) {
 		return CalcModelPredictionFn(modelHandle, docCount, floatFeatures, floatFeaturesSize, catFeatures, catFeaturesSize, result, resultSize);
+}
+
+bool WrapGetCatFeatureIndices(ModelCalcerHandle* modelHandle, size_t** indices, size_t* count) {
+	return GetCatFeatureIndicesFn(modelHandle, indices, count);
+}
+
+bool WrapGetFloatFeatureIndices(ModelCalcerHandle* modelHandle, size_t** indices, size_t* count) {
+	return GetFloatFeatureIndicesFn(modelHandle, indices, count);
 }
 
 bool WrapGetModelUsedFeaturesNames(ModelCalcerHandle* modelHandle, char*** featureNames, size_t* featureCount) {
@@ -93,6 +103,14 @@ void SetGetFloatFeaturesCountFn(void *fn) {
 
 void SetGetCatFeaturesCountFn(void *fn) {
 	GetCatFeaturesCountFn = ((TypeGetCatFeaturesCount) fn);
+}
+
+void SetGetCatFeatureIndicesFn(void *fn) {
+	GetCatFeatureIndicesFn = ((TypeGetCatFeatureIndices) fn);
+}
+
+void SetGetFloatFeatureIndicesFn(void *fn) {
+	GetFloatFeatureIndicesFn = ((TypeGetFloatFeatureIndices) fn);
 }
 
 void SetGetDimensionsCountFn(void *fn) {
@@ -148,4 +166,3 @@ float** makeFloatArray2D(int size) {
 void setFloatArray2D(float **a, float *f, int n) {
 	a[n] = f;
 }
-
