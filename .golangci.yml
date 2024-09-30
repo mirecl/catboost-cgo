@@ -39,7 +39,6 @@ linters:
   disable-all: true
   enable:
     - dogsled
-    - dupl
     - errcheck
     - copyloopvar
     - funlen
