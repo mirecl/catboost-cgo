@@ -19,6 +19,20 @@ func TestVersion(t *testing.T) {
 	require.Equal(t, "v1.2.7", cb.Version())
 }
 
+func TestFeatureIndices(t *testing.T) {
+	modelClassifier, err := cb.LoadFullModelFromFile(testModelPathClassifier)
+	require.NoError(t, err)
+	require.NotNil(t, modelClassifier)
+
+	catIndices, err := modelClassifier.GetCatFeatureIndices()
+	require.NoError(t, err)
+	require.Equal(t, []uint64{0, 1}, catIndices)
+
+	floatIndices, err := modelClassifier.GetFloatFeatureIndices()
+	require.NoError(t, err)
+	require.Equal(t, []uint64{2, 3, 4, 5}, floatIndices)
+}
+
 func TestLoadFullModel(t *testing.T) {
 	modelRegressor, err := cb.LoadFullModelFromFile(testModelPathRegressor)
 	require.NoError(t, err)
