@@ -81,7 +81,6 @@ func initialization() error {
 
 	handle := C.dlopen(cName, C.RTLD_LAZY)
 	if handle == nil {
-		C.dlclose(handle)
 		msg := C.GoString(C.dlerror())
 		return fmt.Errorf("%w `%s`: %s", ErrLoadLibrary, catboostSharedLibraryPath, msg)
 	}
@@ -235,16 +234,21 @@ func (m *Model) SetPredictionType(p PredictionType) error {
 func (m *Model) GetSupportedEvaluatorTypes() ([]EvaluatorType, error) {
 	devicesNum := uint64(2)
 
-	devices := make([]*EvaluatorType, devicesNum)
-	devicesC := (*C.size_t)(devices[0])
+	devicesTmp := make([]*uint64, devicesNum)
+	devicesC := (*C.size_t)(devicesTmp[0])
 	defer C.free(unsafe.Pointer(devicesC))
 
 	if !C.WrapGetSupportedEvaluatorTypes(m.handler, &devicesC, (*C.size_t)(&devicesNum)) {
-		return nil, ErrGetDevices
+		return nil, fmt.Errorf(formatErrorMessage, ErrGetDevices, GetError())
 	}
 
-	supportDevices := (*[1 << 28]EvaluatorType)(unsafe.Pointer(devicesC))[:devicesNum:devicesNum]
-	return supportDevices, nil
+	devicesCTmp := (*[1 << 28]C.int)(unsafe.Pointer(devicesC))[:devicesNum:devicesNum]
+
+	devices := make([]EvaluatorType, 0, len(devicesCTmp))
+	for _, d := range devicesCTmp {
+		devices = append(devices, EvaluatorType(d))
+	}
+	return devices, nil
 }
 
 // GetModelUsedFeaturesNames returns names of features used in the model.
@@ -395,7 +399,7 @@ func (m *Model) GetCatFeatureIndices() ([]uint64, error) {
 	defer C.free(unsafe.Pointer(catsFeatureIndicesC))
 
 	if !C.WrapGetCatFeatureIndices(m.handler, &catsFeatureIndicesC, (*C.size_t)(&catsFeatureNum)) {
-		return []uint64{}, ErrGetIndices
+		return nil, fmt.Errorf(formatErrorMessage, ErrGetIndices, GetError())
 	}
 
 	indices := (*[1 << 28]uint64)(unsafe.Pointer(catsFeatureIndicesC))[:catsFeatureNum:catsFeatureNum]
@@ -414,7 +418,7 @@ func (m *Model) GetFloatFeatureIndices() ([]uint64, error) {
 	defer C.free(unsafe.Pointer(floatsFeatureIndicesC))
 
 	if !C.WrapGetFloatFeatureIndices(m.handler, &floatsFeatureIndicesC, (*C.size_t)(&floatsFeatureNum)) {
-		return []uint64{}, ErrGetIndices
+		return nil, fmt.Errorf(formatErrorMessage, ErrGetIndices, GetError())
 	}
 
 	indices := (*[1 << 28]uint64)(unsafe.Pointer(floatsFeatureIndicesC))[:floatsFeatureNum:floatsFeatureNum]

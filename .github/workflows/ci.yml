@@ -123,3 +123,4 @@ jobs:
           go run example/metadata/metadata.go
           go run example/ranker/ranker.go
           go run example/survival/survival.go
+          go run example/device/device.go
