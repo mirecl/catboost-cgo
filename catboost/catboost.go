@@ -19,6 +19,7 @@ import (
 )
 
 type PredictionType string
+type EvaluatorType uint64
 
 const (
 	RawFormulaVal       PredictionType = "RawFormulaVal"
@@ -26,6 +27,12 @@ const (
 	Class               PredictionType = "Class"
 	RMSEWithUncertainty PredictionType = "RMSEWithUncertainty"
 	Exponent            PredictionType = "Exponent"
+)
+
+const (
+	CPU EvaluatorType = iota
+	GPU
+	Unknown
 )
 
 const formatErrorMessage = "%w: %v"
@@ -49,6 +56,7 @@ var (
 	ErrLoadLibrary               = errors.New("failed loading CatBoost shared library")
 	ErrSetPredictionType         = errors.New("failed set prediction type")
 	ErrGetIndices                = errors.New("failed get indices")
+	ErrGetDevices                = errors.New("failed get devices")
 )
 
 var catboostSharedLibraryPath = ""
@@ -73,7 +81,6 @@ func initialization() error {
 
 	handle := C.dlopen(cName, C.RTLD_LAZY)
 	if handle == nil {
-		C.dlclose(handle)
 		msg := C.GoString(C.dlerror())
 		return fmt.Errorf("%w `%s`: %s", ErrLoadLibrary, catboostSharedLibraryPath, msg)
 	}
@@ -94,6 +101,7 @@ func initialization() error {
 	l.RegisterFn("GetModelInfoValue")
 	l.RegisterFn("GetCatFeatureIndices")
 	l.RegisterFn("GetFloatFeatureIndices")
+	l.RegisterFn("GetSupportedEvaluatorTypes")
 
 	return nil
 }
@@ -132,6 +140,8 @@ func (l *library) RegisterFn(fnName string) {
 		C.SetGetCatFeatureIndicesFn(fnC)
 	case "GetFloatFeatureIndices":
 		C.SetGetFloatFeatureIndicesFn(fnC)
+	case "GetSupportedEvaluatorTypes":
+		C.SetGetSupportedEvaluatorTypesFn(fnC)
 	default:
 		panic(fmt.Sprintf("not supported function from catboost library: %s", fnName))
 	}
@@ -218,6 +228,27 @@ func (m *Model) SetPredictionType(p PredictionType) error {
 	m.predictionType = p
 
 	return nil
+}
+
+// GetSupportedEvaluatorTypes returns supported formula evaluator types.
+func (m *Model) GetSupportedEvaluatorTypes() ([]EvaluatorType, error) {
+	devicesNum := uint64(2)
+
+	devicesTmp := make([]*uint64, devicesNum)
+	devicesC := (*C.size_t)(devicesTmp[0])
+	defer C.free(unsafe.Pointer(devicesC))
+
+	if !C.WrapGetSupportedEvaluatorTypes(m.handler, &devicesC, (*C.size_t)(&devicesNum)) {
+		return nil, fmt.Errorf(formatErrorMessage, ErrGetDevices, GetError())
+	}
+
+	devicesCTmp := (*[1 << 28]C.int)(unsafe.Pointer(devicesC))[:devicesNum:devicesNum]
+
+	devices := make([]EvaluatorType, 0, len(devicesCTmp))
+	for _, d := range devicesCTmp {
+		devices = append(devices, EvaluatorType(d))
+	}
+	return devices, nil
 }
 
 // GetModelUsedFeaturesNames returns names of features used in the model.
@@ -368,7 +399,7 @@ func (m *Model) GetCatFeatureIndices() ([]uint64, error) {
 	defer C.free(unsafe.Pointer(catsFeatureIndicesC))
 
 	if !C.WrapGetCatFeatureIndices(m.handler, &catsFeatureIndicesC, (*C.size_t)(&catsFeatureNum)) {
-		return []uint64{}, ErrGetIndices
+		return nil, fmt.Errorf(formatErrorMessage, ErrGetIndices, GetError())
 	}
 
 	indices := (*[1 << 28]uint64)(unsafe.Pointer(catsFeatureIndicesC))[:catsFeatureNum:catsFeatureNum]
@@ -387,7 +418,7 @@ func (m *Model) GetFloatFeatureIndices() ([]uint64, error) {
 	defer C.free(unsafe.Pointer(floatsFeatureIndicesC))
 
 	if !C.WrapGetFloatFeatureIndices(m.handler, &floatsFeatureIndicesC, (*C.size_t)(&floatsFeatureNum)) {
-		return []uint64{}, ErrGetIndices
+		return nil, fmt.Errorf(formatErrorMessage, ErrGetIndices, GetError())
 	}
 
 	indices := (*[1 << 28]uint64)(unsafe.Pointer(floatsFeatureIndicesC))[:floatsFeatureNum:floatsFeatureNum]

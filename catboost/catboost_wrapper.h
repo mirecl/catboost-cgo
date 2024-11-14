@@ -24,6 +24,7 @@ typedef bool (*TypeGetModelUsedFeaturesNames) (ModelCalcerHandle* modelHandle, c
 typedef const char* (*TypeGetModelInfoValue) (ModelCalcerHandle* modelHandle, const char* keyPtr, size_t keySize);
 typedef bool (*TypeGetCatFeatureIndices) (ModelCalcerHandle* modelHandle, size_t** indices, size_t* count);
 typedef bool (*TypeGetFloatFeatureIndices) (ModelCalcerHandle* modelHandle, size_t** indices, size_t* count);
+typedef bool (*TypeGetSupportedEvaluatorTypes) (ModelCalcerHandle* modelHandle, size_t** formulaEvaluatorTypes, size_t* count);
 
 void SetGetErrorStringFn(void *fn);
 void SetCalcModelPredictionSingleFn(void *fn);
@@ -38,6 +39,7 @@ void SetGetModelUsedFeaturesNamesFn(void *fn);
 void SetGetModelInfoValueFn(void *fn);
 void SetGetCatFeatureIndicesFn(void *fn);
 void SetGetFloatFeatureIndicesFn(void *fn);
+void SetGetSupportedEvaluatorTypesFn(void *fn);
 
 const char* WrapGetErrorString();
 ModelCalcerHandle* WrapModelCalcerCreate();
@@ -61,6 +63,7 @@ bool WrapGetModelUsedFeaturesNames(ModelCalcerHandle* modelHandle, char*** featu
 const char* WrapGetModelInfoValue(ModelCalcerHandle* modelHandle, const char* keyPtr, size_t keySize);
 bool WrapGetCatFeatureIndices(ModelCalcerHandle* modelHandle, size_t** indices, size_t* count);
 bool WrapGetFloatFeatureIndices(ModelCalcerHandle* modelHandle, size_t** indices, size_t* count);
+bool WrapGetSupportedEvaluatorTypes(ModelCalcerHandle* modelHandle, size_t** formulaEvaluatorTypes, size_t* count);
 
 void freeCharArray1D(char **a, int size);
 void freeCharArray2D(char ***a, int sizeX, int sizeY);

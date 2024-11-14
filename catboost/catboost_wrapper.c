@@ -13,6 +13,7 @@ static TypeGetModelUsedFeaturesNames GetModelUsedFeaturesNamesFn = NULL;
 static TypeGetModelInfoValue GetModelInfoValueFn = NULL;
 static TypeGetCatFeatureIndices GetCatFeatureIndicesFn = NULL;
 static TypeGetFloatFeatureIndices GetFloatFeatureIndicesFn = NULL;
+static TypeGetSupportedEvaluatorTypes GetSupportedEvaluatorTypesFn = NULL;
 
 const char* WrapGetErrorString() {
 	return GetErrorStringFn();
@@ -77,6 +78,10 @@ const char* WrapGetModelInfoValue(ModelCalcerHandle* modelHandle, const char* ke
 	return GetModelInfoValueFn(modelHandle, keyPtr, keySize);
 }
 
+bool WrapGetSupportedEvaluatorTypes(ModelCalcerHandle* modelHandle, size_t** formulaEvaluatorTypes, size_t* count) {
+	return GetSupportedEvaluatorTypesFn(modelHandle, formulaEvaluatorTypes, count);
+}
+
 void SetCalcModelPredictionSingleFn(void *fn) {
 	CalcModelPredictionSingleFn = ((TypeCalcModelPredictionSingle) fn);
 }
@@ -127,6 +132,10 @@ void SetGetModelUsedFeaturesNamesFn(void *fn) {
 
 void SetGetModelInfoValueFn(void *fn) {
 	GetModelInfoValueFn = ((TypeGetModelInfoValue) fn);
+}
+
+void SetGetSupportedEvaluatorTypesFn(void *fn) {
+	GetSupportedEvaluatorTypesFn = ((TypeGetSupportedEvaluatorTypes) fn);
 }
 
 char*** makeCharArray2D(int size) {
