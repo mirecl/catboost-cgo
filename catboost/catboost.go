@@ -19,6 +19,7 @@ import (
 )
 
 type PredictionType string
+type EvaluatorType uint64
 
 const (
 	RawFormulaVal       PredictionType = "RawFormulaVal"
@@ -26,6 +27,12 @@ const (
 	Class               PredictionType = "Class"
 	RMSEWithUncertainty PredictionType = "RMSEWithUncertainty"
 	Exponent            PredictionType = "Exponent"
+)
+
+const (
+	CPU EvaluatorType = iota
+	GPU
+	Unknown
 )
 
 const formatErrorMessage = "%w: %v"
@@ -49,6 +56,7 @@ var (
 	ErrLoadLibrary               = errors.New("failed loading CatBoost shared library")
 	ErrSetPredictionType         = errors.New("failed set prediction type")
 	ErrGetIndices                = errors.New("failed get indices")
+	ErrGetDevices                = errors.New("failed get devices")
 )
 
 var catboostSharedLibraryPath = ""
@@ -94,6 +102,7 @@ func initialization() error {
 	l.RegisterFn("GetModelInfoValue")
 	l.RegisterFn("GetCatFeatureIndices")
 	l.RegisterFn("GetFloatFeatureIndices")
+	l.RegisterFn("GetSupportedEvaluatorTypes")
 
 	return nil
 }
@@ -132,6 +141,8 @@ func (l *library) RegisterFn(fnName string) {
 		C.SetGetCatFeatureIndicesFn(fnC)
 	case "GetFloatFeatureIndices":
 		C.SetGetFloatFeatureIndicesFn(fnC)
+	case "GetSupportedEvaluatorTypes":
+		C.SetGetSupportedEvaluatorTypesFn(fnC)
 	default:
 		panic(fmt.Sprintf("not supported function from catboost library: %s", fnName))
 	}
@@ -218,6 +229,22 @@ func (m *Model) SetPredictionType(p PredictionType) error {
 	m.predictionType = p
 
 	return nil
+}
+
+// GetSupportedEvaluatorTypes returns supported formula evaluator types.
+func (m *Model) GetSupportedEvaluatorTypes() ([]EvaluatorType, error) {
+	devicesNum := uint64(2)
+
+	devices := make([]*EvaluatorType, devicesNum)
+	devicesC := (*C.size_t)(devices[0])
+	defer C.free(unsafe.Pointer(devicesC))
+
+	if !C.WrapGetSupportedEvaluatorTypes(m.handler, &devicesC, (*C.size_t)(&devicesNum)) {
+		return nil, ErrGetDevices
+	}
+
+	supportDevices := (*[1 << 28]EvaluatorType)(unsafe.Pointer(devicesC))[:devicesNum:devicesNum]
+	return supportDevices, nil
 }
 
 // GetModelUsedFeaturesNames returns names of features used in the model.
