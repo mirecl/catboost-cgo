@@ -57,6 +57,8 @@ var (
 	ErrSetPredictionType         = errors.New("failed set prediction type")
 	ErrGetIndices                = errors.New("failed get indices")
 	ErrGetDevices                = errors.New("failed get devices")
+	ErrSetCuda                   = errors.New("failed set cuda device")
+	ErrNotFoundCuda              = errors.New("not found cuda device")
 )
 
 var catboostSharedLibraryPath = ""
@@ -102,6 +104,7 @@ func initialization() error {
 	l.RegisterFn("GetCatFeatureIndices")
 	l.RegisterFn("GetFloatFeatureIndices")
 	l.RegisterFn("GetSupportedEvaluatorTypes")
+	l.RegisterFn("EnableGPUEvaluation")
 
 	return nil
 }
@@ -142,6 +145,8 @@ func (l *library) RegisterFn(fnName string) {
 		C.SetGetFloatFeatureIndicesFn(fnC)
 	case "GetSupportedEvaluatorTypes":
 		C.SetGetSupportedEvaluatorTypesFn(fnC)
+	case "EnableGPUEvaluation":
+		C.SetGetEnableGPUEvaluationFn(fnC)
 	default:
 		panic(fmt.Sprintf("not supported function from catboost library: %s", fnName))
 	}
@@ -249,6 +254,24 @@ func (m *Model) GetSupportedEvaluatorTypes() ([]EvaluatorType, error) {
 		devices = append(devices, EvaluatorType(d))
 	}
 	return devices, nil
+}
+
+// EnableGPUEvaluation set use CUDA GPU device for model evaluation.
+func (m *Model) EnableGPUEvaluation(deviceID int) error {
+	devices, err := m.GetSupportedEvaluatorTypes()
+	if err != nil {
+		return err
+	}
+
+	if !slices.Contains(devices, GPU) {
+		return ErrNotFoundCuda
+	}
+
+	if !C.WrapEnableGPUEvaluation(m.handler, C.int(deviceID)) {
+		return fmt.Errorf(formatErrorMessage, ErrSetCuda, GetError())
+	}
+
+	return nil
 }
 
 // GetModelUsedFeaturesNames returns names of features used in the model.

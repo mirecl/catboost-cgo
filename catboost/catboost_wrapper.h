@@ -25,6 +25,7 @@ typedef const char* (*TypeGetModelInfoValue) (ModelCalcerHandle* modelHandle, co
 typedef bool (*TypeGetCatFeatureIndices) (ModelCalcerHandle* modelHandle, size_t** indices, size_t* count);
 typedef bool (*TypeGetFloatFeatureIndices) (ModelCalcerHandle* modelHandle, size_t** indices, size_t* count);
 typedef bool (*TypeGetSupportedEvaluatorTypes) (ModelCalcerHandle* modelHandle, size_t** formulaEvaluatorTypes, size_t* count);
+typedef bool (*TypeEnableGPUEvaluation) (ModelCalcerHandle* modelHandle, int deviceId);
 
 void SetGetErrorStringFn(void *fn);
 void SetCalcModelPredictionSingleFn(void *fn);
@@ -40,6 +41,7 @@ void SetGetModelInfoValueFn(void *fn);
 void SetGetCatFeatureIndicesFn(void *fn);
 void SetGetFloatFeatureIndicesFn(void *fn);
 void SetGetSupportedEvaluatorTypesFn(void *fn);
+void SetGetEnableGPUEvaluationFn(void *fn);
 
 const char* WrapGetErrorString();
 ModelCalcerHandle* WrapModelCalcerCreate();
@@ -64,6 +66,7 @@ const char* WrapGetModelInfoValue(ModelCalcerHandle* modelHandle, const char* ke
 bool WrapGetCatFeatureIndices(ModelCalcerHandle* modelHandle, size_t** indices, size_t* count);
 bool WrapGetFloatFeatureIndices(ModelCalcerHandle* modelHandle, size_t** indices, size_t* count);
 bool WrapGetSupportedEvaluatorTypes(ModelCalcerHandle* modelHandle, size_t** formulaEvaluatorTypes, size_t* count);
+bool WrapEnableGPUEvaluation (ModelCalcerHandle* modelHandle, int deviceId);
 
 void freeCharArray1D(char **a, int size);
 void freeCharArray2D(char ***a, int sizeX, int sizeY);

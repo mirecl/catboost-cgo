@@ -14,6 +14,7 @@ static TypeGetModelInfoValue GetModelInfoValueFn = NULL;
 static TypeGetCatFeatureIndices GetCatFeatureIndicesFn = NULL;
 static TypeGetFloatFeatureIndices GetFloatFeatureIndicesFn = NULL;
 static TypeGetSupportedEvaluatorTypes GetSupportedEvaluatorTypesFn = NULL;
+static TypeEnableGPUEvaluation GetEnableGPUEvaluationFn = NULL;
 
 const char* WrapGetErrorString() {
 	return GetErrorStringFn();
@@ -82,6 +83,10 @@ bool WrapGetSupportedEvaluatorTypes(ModelCalcerHandle* modelHandle, size_t** for
 	return GetSupportedEvaluatorTypesFn(modelHandle, formulaEvaluatorTypes, count);
 }
 
+bool WrapEnableGPUEvaluation (ModelCalcerHandle* modelHandle, int deviceId) {
+	return GetEnableGPUEvaluationFn(modelHandle, deviceId);
+}
+
 void SetCalcModelPredictionSingleFn(void *fn) {
 	CalcModelPredictionSingleFn = ((TypeCalcModelPredictionSingle) fn);
 }
@@ -136,6 +141,10 @@ void SetGetModelInfoValueFn(void *fn) {
 
 void SetGetSupportedEvaluatorTypesFn(void *fn) {
 	GetSupportedEvaluatorTypesFn = ((TypeGetSupportedEvaluatorTypes) fn);
+}
+
+void SetGetEnableGPUEvaluationFn(void *fn) {
+	GetEnableGPUEvaluationFn = ((TypeEnableGPUEvaluation) fn);
 }
 
 char*** makeCharArray2D(int size) {
