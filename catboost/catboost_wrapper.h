@@ -37,7 +37,7 @@ bool WrapEnableGPUEvaluation (ModelCalcerHandle* modelHandle, int deviceId);
 void freeCharArray1D(char **a, int size);
 void freeCharArray2D(char ***a, int sizeX, int sizeY);
 
-void setCharArray1D(char **array, char *s, int n);
+void setCharArray1D(char **a, char *s, int n);
 void setFloatArray2D(float **a, float *f, int n);
 void setCharArray2D(char ***a, char **s, int n);
 
