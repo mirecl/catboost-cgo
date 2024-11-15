@@ -82,6 +82,8 @@ For more information, see <https://catboost.ai/en/docs/concepts/c-plus-plus-api_
   </tr>
 </table>
 
+>_If you use GPU - only device 0 is supported for now. More details: <https://github.com/catboost/catboost/issues/2774>._
+
 **Supported Type:**
 
 + Numeric ✅
