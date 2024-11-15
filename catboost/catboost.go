@@ -49,6 +49,7 @@ const (
 var (
 	ErrLoadFullModelFromFile     = errors.New("failed load model from file")
 	ErrLoadFullModelFromBuffer   = errors.New("failed load model from bytes")
+	ErrNotFoundLibrary           = errors.New("not found catboost library")
 	ErrGetModelUsedFeaturesNames = errors.New("failed get used features name")
 	ErrCalcModelPrediction       = errors.New("failed inference model")
 	ErrNotSupportedPlatform      = errors.New("supported only Linux and MacOS")
@@ -75,7 +76,9 @@ func initialization() error {
 		return ErrNotSupportedPlatform
 	}
 
-	initSharedLibraryPath()
+	if err := initSharedLibraryPath(); err != nil {
+		return err
+	}
 
 	cName := C.CString(catboostSharedLibraryPath)
 	defer C.free(unsafe.Pointer(cName))
@@ -151,16 +154,20 @@ func (l *library) RegisterFn(fnName string) {
 	}
 }
 
-func initSharedLibraryPath() {
-	if catboostSharedLibraryPath != "" {
-		return
+func initSharedLibraryPath() error {
+	if catboostSharedLibraryPath == "" {
+		catboostSharedLibraryPath = os.Getenv("CATBOOST_LIBRARY_PATH")
 	}
 
-	if catboostSharedLibraryPath = os.Getenv("CATBOOST_LIBRARY_PATH"); catboostSharedLibraryPath != "" {
-		return
+	if catboostSharedLibraryPath == "" {
+		catboostSharedLibraryPath = fmt.Sprintf("/usr/local/lib/libcatboostmodel.%s", getExt())
 	}
 
-	catboostSharedLibraryPath = fmt.Sprintf("/usr/local/lib/libcatboostmodel.%s", getExt())
+	if _, err := os.Stat(catboostSharedLibraryPath); errors.Is(err, os.ErrNotExist) {
+		return fmt.Errorf("%w: %s", ErrNotFoundLibrary, catboostSharedLibraryPath)
+	}
+
+	return nil
 }
 
 func checkPlatform() bool {
