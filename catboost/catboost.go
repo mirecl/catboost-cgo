@@ -258,7 +258,7 @@ func (m *Model) GetSupportedEvaluatorTypes() ([]EvaluatorType, error) {
 
 // EnableGPUEvaluation set use CUDA GPU device for model evaluation.
 // Only device 0 is supported for "now"
-// See more details https://github.com/catboost/catboost/blob/v1.2.7/catboost/libs/model_interface/c_api.cpp#L306
+// See more details https://github.com/catboost/catboost/issues/2774
 func (m *Model) EnableGPUEvaluation() error {
 	if runtime.GOOS != "linux" {
 		return ErrNotSupportedGPU
