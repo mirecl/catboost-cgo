@@ -2,17 +2,18 @@ run:
   concurrency: 1
   timeout: 1m
   tests: false
+  go: "1.22"
 
 issues:
   exclude-dirs:
     - example
-  max-issues-per-linter: 100
-  max-same-issues: 100
+  max-issues-per-linter: 1000
+  max-same-issues: 1000
   exclude-use-default: false
   exclude-rules:
     - linters:
         - revive
-      text: "package-comments:"
+      text: "package-comments|RawFormulaVal|ErrLoadFullModelFromFile"
     - linters:
         - gocritic
       text: "dupSubExpr:"
@@ -29,11 +30,20 @@ linters-settings:
   dupl:
     threshold: 50
 
+  stylecheck:
+    checks: ["all"]
+
   dogsled:
     max-blank-identifiers: 2
 
   govet:
     enable-all: true
+
+  godot:
+    scope: all
+
+  gosimple:
+    checks: ["all"]
 
 linters:
   disable-all: true
@@ -51,7 +61,6 @@ linters:
     - gosec
     - gosimple
     - govet
-    - godot
     - ineffassign
     - lll
     - misspell
@@ -64,7 +73,11 @@ linters:
     - unparam
     - unused
     - whitespace
+    - revive
+    - godot
 
   presets:
+    - bugs
     - comment
+    - format
     - unused

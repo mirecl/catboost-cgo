@@ -18,7 +18,10 @@ import (
 	"unsafe"
 )
 
+// PredictionType typing inference Model.
 type PredictionType string
+
+// EvaluatorType typing device.
 type EvaluatorType uint64
 
 const (
@@ -30,7 +33,9 @@ const (
 )
 
 const (
+	// CPU device.
 	CPU EvaluatorType = iota
+	// GPU device.
 	GPU
 )
 
@@ -63,10 +68,12 @@ var (
 
 var catboostSharedLibraryPath = ""
 
+// Version returns version catboost.
 func Version() string {
 	return fmt.Sprintf("v%d.%d.%d", C.CATBOOST_APPLIER_MAJOR, C.CATBOOST_APPLIER_MINOR, C.CATBOOST_APPLIER_FIX)
 }
 
+// SetSharedLibraryPath set library catboost path.
 func SetSharedLibraryPath(path string) {
 	catboostSharedLibraryPath = path
 }
@@ -233,7 +240,7 @@ func (m *Model) SetPredictionType(p PredictionType) error {
 	defer C.free(unsafe.Pointer(pC))
 
 	if !C.WrapSetPredictionTypeString(m.handler, pC) {
-		return fmt.Errorf("%w `%s`: %s", ErrSetPredictionType, p, GetError())
+		return fmt.Errorf("%w `%s`: %s", ErrSetPredictionType, p, GetError().Error())
 	}
 
 	m.predictionType = p
@@ -402,7 +409,7 @@ func (m *Model) PredictSingle(floats []float32, cats []string) ([]float64, error
 		C.size_t(len(cats)),
 		(*C.double)(&preds[0]),
 		C.size_t(len(preds))) {
-		return nil, fmt.Errorf("%s", GetError())
+		return nil, GetError()
 	}
 
 	return preds, nil
@@ -479,7 +486,7 @@ func getFromLibraryFn(handle unsafe.Pointer, fnName string) unsafe.Pointer {
 
 // GetError returns last error from model.
 // If error ocured will return stored exception message.
-// If no error ocured, will return invalid pointer
+// If no error ocured, will return invalid pointer.
 func GetError() error {
 	messageC := C.WrapGetErrorString()
 	message := C.GoString(messageC)
