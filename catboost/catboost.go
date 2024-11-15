@@ -32,7 +32,6 @@ const (
 const (
 	CPU EvaluatorType = iota
 	GPU
-	Unknown
 )
 
 const formatErrorMessage = "%w: %v"
@@ -57,7 +56,7 @@ var (
 	ErrSetPredictionType         = errors.New("failed set prediction type")
 	ErrGetIndices                = errors.New("failed get indices")
 	ErrGetDevices                = errors.New("failed get list devices")
-	ErrSetDevice                 = errors.New("failed set GPU device")
+	ErrEnabledGPU                = errors.New("failed enabled GPU")
 	ErrNotSupportedGPU           = errors.New("not supported GPU")
 )
 
@@ -276,7 +275,7 @@ func (m *Model) EnableGPUEvaluation() error {
 	deviceID := 0
 
 	if !C.WrapEnableGPUEvaluation(m.handler, C.int(deviceID)) {
-		return fmt.Errorf("%w id `%d`", ErrSetDevice, deviceID)
+		return ErrEnabledGPU
 	}
 
 	return nil
