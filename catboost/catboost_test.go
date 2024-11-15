@@ -1,7 +1,6 @@
 package catboost_test
 
 import (
-	"errors"
 	"fmt"
 	"runtime"
 	"testing"
@@ -185,10 +184,10 @@ func TestEnableGPUEvaluation(t *testing.T) {
 	err = model.EnableGPUEvaluation()
 
 	if runtime.GOOS == "darwin" {
-		require.True(t, errors.Is(err, cb.ErrNotSupportedGPU))
+		require.ErrorIs(t, err, cb.ErrNotSupportedGPU)
 	}
 
 	if runtime.GOOS == "linux" {
-		require.True(t, errors.Is(err, cb.ErrEnabledGPU))
+		require.ErrorIs(t, err, cb.ErrEnabledGPU)
 	}
 }
