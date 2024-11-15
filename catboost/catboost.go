@@ -58,7 +58,7 @@ var (
 	ErrGetIndices                = errors.New("failed get indices")
 	ErrGetDevices                = errors.New("failed get list devices")
 	ErrEnabledGPU                = errors.New("failed enabled GPU")
-	ErrNotSupportedGPU           = errors.New("not supported GPU")
+	ErrNotSupportedGPU           = errors.New("supported GPU only Linux")
 )
 
 var catboostSharedLibraryPath = ""
