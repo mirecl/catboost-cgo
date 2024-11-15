@@ -1,7 +1,9 @@
 package catboost_test
 
 import (
+	"errors"
 	"fmt"
+	"runtime"
 	"testing"
 
 	cb "github.com/mirecl/catboost-cgo/catboost"
@@ -163,4 +165,30 @@ func TestGetError(t *testing.T) {
 
 	err = cb.GetError()
 	require.NoError(t, err)
+}
+
+func TestGetSupportedEvaluatorTypes(t *testing.T) {
+	// init test model
+	model, err := cb.LoadFullModelFromFile(testModelPathRegressor)
+	require.NoError(t, err)
+
+	devices, err := model.GetSupportedEvaluatorTypes()
+	require.NoError(t, err)
+	require.True(t, len(devices) > 0)
+}
+
+func TestEnableGPUEvaluation(t *testing.T) {
+	// init test model
+	model, err := cb.LoadFullModelFromFile(testModelPathRegressor)
+	require.NoError(t, err)
+
+	err = model.EnableGPUEvaluation()
+
+	if runtime.GOOS == "darwin" {
+		require.True(t, errors.Is(err, cb.ErrNotSupportedGPU))
+	}
+
+	if runtime.GOOS == "linux" {
+		require.NoError(t, err)
+	}
 }
