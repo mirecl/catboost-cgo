@@ -52,13 +52,13 @@ var (
 	ErrLoadFullModelFromBuffer   = errors.New("failed load model from bytes")
 	ErrGetModelUsedFeaturesNames = errors.New("failed get used features name")
 	ErrCalcModelPrediction       = errors.New("failed inference model")
-	ErrNotSupported              = errors.New("supported only Linux and MacOS")
+	ErrNotSupportedPlatform      = errors.New("supported only Linux and MacOS")
 	ErrLoadLibrary               = errors.New("failed loading CatBoost shared library")
 	ErrSetPredictionType         = errors.New("failed set prediction type")
 	ErrGetIndices                = errors.New("failed get indices")
-	ErrGetDevices                = errors.New("failed get devices")
-	ErrSetCuda                   = errors.New("failed set cuda device")
-	ErrNotFoundCuda              = errors.New("not found cuda device")
+	ErrGetDevices                = errors.New("failed get list devices")
+	ErrSetDevice                 = errors.New("failed set GPU device")
+	ErrNotSupportedGPU           = errors.New("not supported GPU")
 )
 
 var catboostSharedLibraryPath = ""
@@ -73,7 +73,7 @@ func SetSharedLibraryPath(path string) {
 
 func initialization() error {
 	if !checkPlatform() {
-		return ErrNotSupported
+		return ErrNotSupportedPlatform
 	}
 
 	initSharedLibraryPath()
@@ -257,18 +257,26 @@ func (m *Model) GetSupportedEvaluatorTypes() ([]EvaluatorType, error) {
 }
 
 // EnableGPUEvaluation set use CUDA GPU device for model evaluation.
-func (m *Model) EnableGPUEvaluation(deviceID int) error {
+// Only device 0 is supported for "now"
+// See more details https://github.com/catboost/catboost/blob/v1.2.7/catboost/libs/model_interface/c_api.cpp#L306
+func (m *Model) EnableGPUEvaluation() error {
+	if runtime.GOOS != "linux" {
+		return ErrNotSupportedGPU
+	}
+
 	devices, err := m.GetSupportedEvaluatorTypes()
 	if err != nil {
 		return err
 	}
 
 	if !slices.Contains(devices, GPU) {
-		return ErrNotFoundCuda
+		return ErrNotSupportedGPU
 	}
 
+	deviceID := 0
+
 	if !C.WrapEnableGPUEvaluation(m.handler, C.int(deviceID)) {
-		return fmt.Errorf(formatErrorMessage, ErrSetCuda, GetError())
+		return fmt.Errorf("%w id `%d`", ErrSetDevice, deviceID)
 	}
 
 	return nil
