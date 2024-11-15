@@ -21,17 +21,8 @@ void SetGetEnableGPUEvaluationFn(void *fn);
 const char* WrapGetErrorString();
 ModelCalcerHandle* WrapModelCalcerCreate();
 bool WrapLoadFullModelFromBuffer(ModelCalcerHandle* modelHandle, const void* binaryBuffer, size_t binaryBufferSize);
-bool WrapCalcModelPredictionSingle(
-    ModelCalcerHandle* modelHandle, 
-    const float* floatFeatures, size_t floatFeaturesSize, 
-    const char** catFeatures, size_t catFeaturesSize, 
-    double* result, size_t resultSize);
-bool WrapCalcModelPrediction(
-    ModelCalcerHandle* modelHandle,
-    size_t docCount,
-    const float** floatFeatures, size_t floatFeaturesSize,
-    const char*** catFeatures, size_t catFeaturesSize,
-    double* result, size_t resultSize);
+bool WrapCalcModelPredictionSingle( ModelCalcerHandle* modelHandle, const float* floatFeatures, size_t floatFeaturesSize, const char** catFeatures, size_t catFeaturesSize, double* result, size_t resultSize);
+bool WrapCalcModelPrediction(ModelCalcerHandle* modelHandle, size_t docCount, const float** floatFeatures, size_t floatFeaturesSize, const char*** catFeatures, size_t catFeaturesSize, double* result, size_t resultSize);
 size_t WrapGetFloatFeaturesCount(ModelCalcerHandle* modelHandle);
 size_t WrapGetCatFeaturesCount(ModelCalcerHandle* modelHandle);
 size_t WrapGetDimensionsCount(ModelCalcerHandle* modelHandle);

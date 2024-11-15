@@ -3,17 +3,8 @@
 typedef const char* (*TypeGetErrorString) (void);
 typedef ModelCalcerHandle* (*TypeModelCalcerCreate) (void);
 typedef bool (*TypeLoadFullModelFromBuffer) (ModelCalcerHandle* modelHandle, const void* binaryBuffer, size_t binaryBufferSize);
-typedef bool (*TypeCalcModelPredictionSingle) (
-    ModelCalcerHandle* modelHandle, 
-    const float* floatFeatures, size_t floatFeaturesSize, 
-    const char** catFeatures, size_t catFeaturesSize, 
-    double* result, size_t resultSize);
-typedef bool (*TypeCalcModelPrediction) (
-    ModelCalcerHandle* modelHandle,
-    size_t docCount,
-    const float** floatFeatures, size_t floatFeaturesSize,
-    const char*** catFeatures, size_t catFeaturesSize,
-    double* result, size_t resultSize);
+typedef bool (*TypeCalcModelPredictionSingle) (ModelCalcerHandle* modelHandle, const float* floatFeatures, size_t floatFeaturesSize, const char** catFeatures, size_t catFeaturesSize, double* result, size_t resultSize);
+typedef bool (*TypeCalcModelPrediction) (ModelCalcerHandle* modelHandle, size_t docCount, const float** floatFeatures, size_t floatFeaturesSize, const char*** catFeatures, size_t catFeaturesSize, double* result, size_t resultSize);
 typedef size_t (*TypeGetFloatFeaturesCount) (ModelCalcerHandle* modelHandle);
 typedef size_t (*TypeGetCatFeaturesCount)(ModelCalcerHandle* modelHandle);
 typedef size_t (*TypeGetDimensionsCount) (ModelCalcerHandle* modelHandle);
@@ -53,23 +44,12 @@ bool WrapLoadFullModelFromBuffer(ModelCalcerHandle* modelHandle, const void* bin
 	return LoadFullModelFromBufferFn(modelHandle, binaryBuffer, binaryBufferSize);
 }
 
-bool WrapCalcModelPredictionSingle(
-	ModelCalcerHandle* modelHandle, 
-	const float* floatFeatures, 
-	size_t floatFeaturesSize, 
-	const char** catFeatures, 
-	size_t catFeaturesSize, 
-	double* result, size_t resultSize) {
+bool WrapCalcModelPredictionSingle(ModelCalcerHandle* modelHandle, const float* floatFeatures, size_t floatFeaturesSize, const char** catFeatures, size_t catFeaturesSize, double* result, size_t resultSize) {
 	return CalcModelPredictionSingleFn(modelHandle, floatFeatures, floatFeaturesSize, catFeatures, catFeaturesSize, result, resultSize);
 }
 
-bool WrapCalcModelPrediction(
-    ModelCalcerHandle* modelHandle,
-    size_t docCount,
-    const float** floatFeatures, size_t floatFeaturesSize,
-    const char*** catFeatures, size_t catFeaturesSize,
-    double* result, size_t resultSize) {
-		return CalcModelPredictionFn(modelHandle, docCount, floatFeatures, floatFeaturesSize, catFeatures, catFeaturesSize, result, resultSize);
+bool WrapCalcModelPrediction(ModelCalcerHandle* modelHandle, size_t docCount, const float** floatFeatures, size_t floatFeaturesSize, const char*** catFeatures, size_t catFeaturesSize, double* result, size_t resultSize) {
+	return CalcModelPredictionFn(modelHandle, docCount, floatFeatures, floatFeaturesSize, catFeatures, catFeaturesSize, result, resultSize);
 }
 
 bool WrapGetCatFeatureIndices(ModelCalcerHandle* modelHandle, size_t** indices, size_t* count) {
