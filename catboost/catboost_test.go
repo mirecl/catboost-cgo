@@ -189,6 +189,6 @@ func TestEnableGPUEvaluation(t *testing.T) {
 	}
 
 	if runtime.GOOS == "linux" {
-		require.NoError(t, err)
+		require.True(t, errors.Is(err, cb.ErrEnabledGPU))
 	}
 }
