@@ -52,11 +52,13 @@ var (
 	ErrLoadFullModelFromBuffer   = errors.New("failed load model from bytes")
 	ErrGetModelUsedFeaturesNames = errors.New("failed get used features name")
 	ErrCalcModelPrediction       = errors.New("failed inference model")
-	ErrNotSupported              = errors.New("supported only Linux and MacOS")
+	ErrNotSupportedPlatform      = errors.New("supported only Linux and MacOS")
 	ErrLoadLibrary               = errors.New("failed loading CatBoost shared library")
 	ErrSetPredictionType         = errors.New("failed set prediction type")
 	ErrGetIndices                = errors.New("failed get indices")
-	ErrGetDevices                = errors.New("failed get devices")
+	ErrGetDevices                = errors.New("failed get list devices")
+	ErrSetDevice                 = errors.New("failed set GPU device")
+	ErrNotSupportedGPU           = errors.New("not supported GPU")
 )
 
 var catboostSharedLibraryPath = ""
@@ -71,7 +73,7 @@ func SetSharedLibraryPath(path string) {
 
 func initialization() error {
 	if !checkPlatform() {
-		return ErrNotSupported
+		return ErrNotSupportedPlatform
 	}
 
 	initSharedLibraryPath()
@@ -102,6 +104,7 @@ func initialization() error {
 	l.RegisterFn("GetCatFeatureIndices")
 	l.RegisterFn("GetFloatFeatureIndices")
 	l.RegisterFn("GetSupportedEvaluatorTypes")
+	l.RegisterFn("EnableGPUEvaluation")
 
 	return nil
 }
@@ -142,6 +145,8 @@ func (l *library) RegisterFn(fnName string) {
 		C.SetGetFloatFeatureIndicesFn(fnC)
 	case "GetSupportedEvaluatorTypes":
 		C.SetGetSupportedEvaluatorTypesFn(fnC)
+	case "EnableGPUEvaluation":
+		C.SetGetEnableGPUEvaluationFn(fnC)
 	default:
 		panic(fmt.Sprintf("not supported function from catboost library: %s", fnName))
 	}
@@ -249,6 +254,32 @@ func (m *Model) GetSupportedEvaluatorTypes() ([]EvaluatorType, error) {
 		devices = append(devices, EvaluatorType(d))
 	}
 	return devices, nil
+}
+
+// EnableGPUEvaluation set use CUDA GPU device for model evaluation.
+// Only device 0 is supported for "now"
+// See more details https://github.com/catboost/catboost/issues/2774
+func (m *Model) EnableGPUEvaluation() error {
+	if runtime.GOOS != "linux" {
+		return ErrNotSupportedGPU
+	}
+
+	devices, err := m.GetSupportedEvaluatorTypes()
+	if err != nil {
+		return err
+	}
+
+	if !slices.Contains(devices, GPU) {
+		return ErrNotSupportedGPU
+	}
+
+	deviceID := 0
+
+	if !C.WrapEnableGPUEvaluation(m.handler, C.int(deviceID)) {
+		return fmt.Errorf("%w id `%d`", ErrSetDevice, deviceID)
+	}
+
+	return nil
 }
 
 // GetModelUsedFeaturesNames returns names of features used in the model.

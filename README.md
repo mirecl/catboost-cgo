@@ -73,7 +73,7 @@ For more information, see <https://catboost.ai/en/docs/concepts/c-plus-plus-api_
   <tr>
     <td>Linux</td>
     <td>✅ (x86_64)</td>
-    <td>🚫</td>
+    <td>✅ (x86_64)</td>
   </tr>
   <tr>
     <td>Windows 10 and 11</td>

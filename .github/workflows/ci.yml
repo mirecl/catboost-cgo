@@ -4,6 +4,8 @@ on:
   workflow_dispatch:
   pull_request:
     branches: ["master"]
+  push:
+    branches: ["master"]
 
 env:
   CATBOOST_VERSION: "v1.2.7"
@@ -114,6 +116,8 @@ jobs:
           python example/metadata/metadata.py
           python example/ranker/ranker.py
           python example/survival/survival.py
+          python example/titanic/titanic.py
+          python example/uncertainty/uncertainty.py
 
       - name: Predict (Golang)
         run: |
@@ -124,3 +128,5 @@ jobs:
           go run example/ranker/ranker.go
           go run example/survival/survival.go
           go run example/device/device.go
+          go run example/titanic/titanic.go
+          go run example/uncertainty/uncertainty.go
