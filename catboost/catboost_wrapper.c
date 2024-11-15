@@ -1,5 +1,30 @@
 #include "catboost_wrapper.h"
 
+typedef const char* (*TypeGetErrorString) (void);
+typedef ModelCalcerHandle* (*TypeModelCalcerCreate) (void);
+typedef bool (*TypeLoadFullModelFromBuffer) (ModelCalcerHandle* modelHandle, const void* binaryBuffer, size_t binaryBufferSize);
+typedef bool (*TypeCalcModelPredictionSingle) (
+    ModelCalcerHandle* modelHandle, 
+    const float* floatFeatures, size_t floatFeaturesSize, 
+    const char** catFeatures, size_t catFeaturesSize, 
+    double* result, size_t resultSize);
+typedef bool (*TypeCalcModelPrediction) (
+    ModelCalcerHandle* modelHandle,
+    size_t docCount,
+    const float** floatFeatures, size_t floatFeaturesSize,
+    const char*** catFeatures, size_t catFeaturesSize,
+    double* result, size_t resultSize);
+typedef size_t (*TypeGetFloatFeaturesCount) (ModelCalcerHandle* modelHandle);
+typedef size_t (*TypeGetCatFeaturesCount)(ModelCalcerHandle* modelHandle);
+typedef size_t (*TypeGetDimensionsCount) (ModelCalcerHandle* modelHandle);
+typedef bool (*TypeSetPredictionTypeString) (ModelCalcerHandle* modelHandle, const char* predictionTypeStr);
+typedef bool (*TypeGetModelUsedFeaturesNames) (ModelCalcerHandle* modelHandle, char*** featureNames, size_t* featureCount);
+typedef const char* (*TypeGetModelInfoValue) (ModelCalcerHandle* modelHandle, const char* keyPtr, size_t keySize);
+typedef bool (*TypeGetCatFeatureIndices) (ModelCalcerHandle* modelHandle, size_t** indices, size_t* count);
+typedef bool (*TypeGetFloatFeatureIndices) (ModelCalcerHandle* modelHandle, size_t** indices, size_t* count);
+typedef bool (*TypeGetSupportedEvaluatorTypes) (ModelCalcerHandle* modelHandle, size_t** formulaEvaluatorTypes, size_t* count);
+typedef bool (*TypeEnableGPUEvaluation) (ModelCalcerHandle* modelHandle, int deviceId);
+
 static TypeGetErrorString GetErrorStringFn = NULL;
 static TypeModelCalcerCreate ModelCalcerCreateFn = NULL;
 static TypeLoadFullModelFromBuffer LoadFullModelFromBufferFn = NULL;
@@ -155,11 +180,11 @@ char** makeCharArray1D(int size) {
     return calloc(sizeof(char*), size);
 }
 
-void freeCharArray1D(char **array, int size) {
+void freeCharArray1D(char **a, int size) {
 	int i;
 	for (i = 0; i < size; i++)
-		free(array[i]);
-	free(array);
+		free(a[i]);
+	free(a);
 }
 
 void freeCharArray2D(char ***a, int sizeX, int sizeY) {
@@ -169,8 +194,8 @@ void freeCharArray2D(char ***a, int sizeX, int sizeY) {
 	free(a);
 }
 
-void setCharArray1D(char **array, char *s, int n) {
-    array[n] = s;
+void setCharArray1D(char **a, char *s, int n) {
+    a[n] = s;
 }
 
  void setCharArray2D(char ***a, char **s, int n) {

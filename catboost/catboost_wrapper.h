@@ -2,31 +2,6 @@
 #include <stdlib.h>
 #include "c_api.h"
 
-typedef const char* (*TypeGetErrorString) (void);
-typedef ModelCalcerHandle* (*TypeModelCalcerCreate) (void);
-typedef bool (*TypeLoadFullModelFromBuffer) (ModelCalcerHandle* modelHandle, const void* binaryBuffer, size_t binaryBufferSize);
-typedef bool (*TypeCalcModelPredictionSingle) (
-    ModelCalcerHandle* modelHandle, 
-    const float* floatFeatures, size_t floatFeaturesSize, 
-    const char** catFeatures, size_t catFeaturesSize, 
-    double* result, size_t resultSize);
-typedef bool (*TypeCalcModelPrediction) (
-    ModelCalcerHandle* modelHandle,
-    size_t docCount,
-    const float** floatFeatures, size_t floatFeaturesSize,
-    const char*** catFeatures, size_t catFeaturesSize,
-    double* result, size_t resultSize);
-typedef size_t (*TypeGetFloatFeaturesCount) (ModelCalcerHandle* modelHandle);
-typedef size_t (*TypeGetCatFeaturesCount)(ModelCalcerHandle* modelHandle);
-typedef size_t (*TypeGetDimensionsCount) (ModelCalcerHandle* modelHandle);
-typedef bool (*TypeSetPredictionTypeString) (ModelCalcerHandle* modelHandle, const char* predictionTypeStr);
-typedef bool (*TypeGetModelUsedFeaturesNames) (ModelCalcerHandle* modelHandle, char*** featureNames, size_t* featureCount);
-typedef const char* (*TypeGetModelInfoValue) (ModelCalcerHandle* modelHandle, const char* keyPtr, size_t keySize);
-typedef bool (*TypeGetCatFeatureIndices) (ModelCalcerHandle* modelHandle, size_t** indices, size_t* count);
-typedef bool (*TypeGetFloatFeatureIndices) (ModelCalcerHandle* modelHandle, size_t** indices, size_t* count);
-typedef bool (*TypeGetSupportedEvaluatorTypes) (ModelCalcerHandle* modelHandle, size_t** formulaEvaluatorTypes, size_t* count);
-typedef bool (*TypeEnableGPUEvaluation) (ModelCalcerHandle* modelHandle, int deviceId);
-
 void SetGetErrorStringFn(void *fn);
 void SetCalcModelPredictionSingleFn(void *fn);
 void SetModelCalcerCreateFn(void *fn);
