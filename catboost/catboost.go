@@ -96,24 +96,24 @@ func initialization() error {
 		return fmt.Errorf("%w `%s`: %s", ErrLoadLibrary, catboostSharedLibraryPath, msg)
 	}
 
-	l := library{handle}
+	lib := library{handle}
 
 	// Load function from CatBoost shared library
-	l.RegisterFn("ModelCalcerCreate")
-	l.RegisterFn("LoadFullModelFromBuffer")
-	l.RegisterFn("CalcModelPredictionSingle")
-	l.RegisterFn("CalcModelPrediction")
-	l.RegisterFn("GetErrorString")
-	l.RegisterFn("GetFloatFeaturesCount")
-	l.RegisterFn("GetCatFeaturesCount")
-	l.RegisterFn("GetDimensionsCount")
-	l.RegisterFn("SetPredictionTypeString")
-	l.RegisterFn("GetModelUsedFeaturesNames")
-	l.RegisterFn("GetModelInfoValue")
-	l.RegisterFn("GetCatFeatureIndices")
-	l.RegisterFn("GetFloatFeatureIndices")
-	l.RegisterFn("GetSupportedEvaluatorTypes")
-	l.RegisterFn("EnableGPUEvaluation")
+	lib.RegisterFn("ModelCalcerCreate")
+	lib.RegisterFn("LoadFullModelFromBuffer")
+	lib.RegisterFn("CalcModelPredictionSingle")
+	lib.RegisterFn("CalcModelPrediction")
+	lib.RegisterFn("GetErrorString")
+	lib.RegisterFn("GetFloatFeaturesCount")
+	lib.RegisterFn("GetCatFeaturesCount")
+	lib.RegisterFn("GetDimensionsCount")
+	lib.RegisterFn("SetPredictionTypeString")
+	lib.RegisterFn("GetModelUsedFeaturesNames")
+	lib.RegisterFn("GetModelInfoValue")
+	lib.RegisterFn("GetCatFeatureIndices")
+	lib.RegisterFn("GetFloatFeatureIndices")
+	lib.RegisterFn("GetSupportedEvaluatorTypes")
+	lib.RegisterFn("EnableGPUEvaluation")
 
 	return nil
 }
