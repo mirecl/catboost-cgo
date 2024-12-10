@@ -3,6 +3,6 @@ catboost==1.2.7
 numpy==1.26.4
 pandas==2.2.3
 ruff==0.8.2
-scikit-learn==1.5.2
+scikit-learn==1.6.0
 scikit-survival==0.23.1
 
