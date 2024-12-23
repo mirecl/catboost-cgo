@@ -289,7 +289,7 @@ func (m *Model) EnableGPUEvaluation() error {
 	deviceID := 0
 
 	if !C.WrapEnableGPUEvaluation(m.handler, C.int(deviceID)) {
-		return ErrEnabledGPU
+		return fmt.Errorf(formatErrorMessage, ErrEnabledGPU, GetError())
 	}
 
 	return nil
@@ -476,7 +476,6 @@ func getFromLibraryFn(handle unsafe.Pointer, fnName string) unsafe.Pointer {
 
 	fn := C.dlsym(handle, cFnName)
 	if fn == nil {
-		C.dlclose(handle)
 		msg := C.GoString(C.dlerror())
 		panic(fmt.Sprintf("Error looking up %s in `%s`: %s", fnName, catboostSharedLibraryPath, msg))
 	}
