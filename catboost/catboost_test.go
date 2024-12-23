@@ -39,6 +39,10 @@ func TestLoadFullModel(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, modelRegressor)
 
+	catIndices, err := modelRegressor.GetCatFeatureIndices()
+	require.NoError(t, err)
+	require.Equal(t, []uint64{}, catIndices)
+
 	modelFake, err := cb.LoadFullModelFromFile("fake.cbm")
 	require.ErrorIs(t, err, cb.ErrLoadFullModelFromFile)
 	require.Nil(t, modelFake)
