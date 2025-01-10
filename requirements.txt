@@ -2,7 +2,7 @@ black==24.10.0
 catboost==1.2.7
 numpy==1.26.4
 pandas==2.2.3
-ruff==0.8.5
+ruff==0.9.0
 scikit-learn==1.5.2
 scikit-survival==0.23.1
 
