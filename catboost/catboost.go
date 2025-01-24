@@ -370,7 +370,7 @@ func (m *Model) Predict(floats [][]float32, cats [][]string) ([]float64, error) 
 	defer C.free(unsafe.Pointer(floatsC))
 
 	catsC := makeCharArray2D(cats)
-	defer C.freeCharArray2D(catsC, C.int(nSamples), C.int(catFeaturesCount))
+	defer C.freeCharArray2D(catsC, C.int(len(cats)), C.int(catFeaturesCount))
 
 	if !C.WrapCalcModelPrediction(
 		m.handler,
