@@ -48,6 +48,14 @@ func TestLoadFullModel(t *testing.T) {
 	require.Nil(t, modelFake)
 }
 
+func TestDelete(t *testing.T) {
+	modelRegressor, err := cb.LoadFullModelFromFile(testModelPathRegressor)
+	require.NoError(t, err)
+	require.NotNil(t, modelRegressor)
+
+	modelRegressor.Delete()
+}
+
 func TestPredict(t *testing.T) {
 	modelRegressor, err := cb.LoadFullModelFromFile(testModelPathRegressor)
 	require.NoError(t, err)
