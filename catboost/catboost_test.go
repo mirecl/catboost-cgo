@@ -17,7 +17,7 @@ const (
 )
 
 func TestVersion(t *testing.T) {
-	require.Equal(t, "v1.2.7", cb.Version())
+	require.Equal(t, "v1.2.8", cb.Version())
 }
 
 func TestFeatureIndices(t *testing.T) {
@@ -46,6 +46,14 @@ func TestLoadFullModel(t *testing.T) {
 	modelFake, err := cb.LoadFullModelFromFile("fake.cbm")
 	require.ErrorIs(t, err, cb.ErrLoadFullModelFromFile)
 	require.Nil(t, modelFake)
+}
+
+func TestDelete(t *testing.T) {
+	modelRegressor, err := cb.LoadFullModelFromFile(testModelPathRegressor)
+	require.NoError(t, err)
+	require.NotNil(t, modelRegressor)
+
+	modelRegressor.Delete()
 }
 
 func TestPredict(t *testing.T) {

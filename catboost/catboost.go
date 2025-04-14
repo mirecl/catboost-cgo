@@ -100,6 +100,7 @@ func initialization() error {
 
 	// Load function from CatBoost shared library
 	lib.RegisterFn("ModelCalcerCreate")
+	lib.RegisterFn("ModelCalcerDelete")
 	lib.RegisterFn("LoadFullModelFromBuffer")
 	lib.RegisterFn("CalcModelPredictionSingle")
 	lib.RegisterFn("CalcModelPrediction")
@@ -113,6 +114,7 @@ func initialization() error {
 	lib.RegisterFn("GetCatFeatureIndices")
 	lib.RegisterFn("GetFloatFeatureIndices")
 	lib.RegisterFn("GetSupportedEvaluatorTypes")
+	lib.RegisterFn("EnableGPUEvaluation")
 	lib.RegisterFn("EnableGPUEvaluation")
 
 	return nil
@@ -156,6 +158,8 @@ func (l *library) RegisterFn(fnName string) {
 		C.SetGetSupportedEvaluatorTypesFn(fnC)
 	case "EnableGPUEvaluation":
 		C.SetGetEnableGPUEvaluationFn(fnC)
+	case "ModelCalcerDelete":
+		C.SetModelCalcerDeleteFn(fnC)
 	default:
 		panic(fmt.Sprintf("not supported function from catboost library: %s", fnName))
 	}
@@ -413,6 +417,11 @@ func (m *Model) PredictSingle(floats []float32, cats []string) ([]float64, error
 	}
 
 	return preds, nil
+}
+
+// Delete model handle.
+func (m *Model) Delete() {
+	C.WrapModelCalcerDelete(m.handler)
 }
 
 // Transform change data for result Multiclassification.
