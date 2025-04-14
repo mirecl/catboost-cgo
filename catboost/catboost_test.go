@@ -17,7 +17,7 @@ const (
 )
 
 func TestVersion(t *testing.T) {
-	require.Equal(t, "v1.2.7", cb.Version())
+	require.Equal(t, "v1.2.8", cb.Version())
 }
 
 func TestFeatureIndices(t *testing.T) {

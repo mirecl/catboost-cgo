@@ -28,9 +28,11 @@ For more information, see <https://catboost.ai/en/docs/concepts/c-plus-plus-api_
     <th>v1.2.5</th>
     <th>v1.2.6</th>
     <th>v1.2.7</th>
+    <th>v1.2.8</th>
   </tr>
   <tr>
     <td align="center">🚫 (not testing)</td>
+    <td align="center">✅</td>
     <td align="center">✅</td>
     <td align="center">✅</td>
     <td align="center">✅</td>
