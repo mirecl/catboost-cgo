@@ -1,5 +1,5 @@
 black==25.11.0
-catboost==1.2.8
+catboost==1.2.9
 numpy==1.26.4
 pandas==2.3.3
 ruff==0.15.1
