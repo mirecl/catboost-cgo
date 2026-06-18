@@ -127,6 +127,7 @@ type library struct {
 	handle unsafe.Pointer
 }
 
+//nolint:funlen
 func (l *library) RegisterFn(fnName string) {
 	fnC := getFromLibraryFn(l.handle, fnName)
 
