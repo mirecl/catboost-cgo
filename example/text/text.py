@@ -12,20 +12,20 @@ path = pathlib.Path(__file__).parent.resolve()
 text_features = [0]
 
 train_data = [
-    ["good product",        4.5, 120.0],
-    ["excellent quality",   4.8,  95.0],
-    ["love this item",      4.7, 110.0],
-    ["bad quality",         1.2,  30.0],
-    ["terrible product",    1.0,  20.0],
-    ["worst purchase ever", 1.1,  25.0],
-    ["works as expected",   3.9,  80.0],
-    ["not worth the price", 2.1,  40.0],
+    ["good product", 4.5, 120.0],
+    ["excellent quality", 4.8, 95.0],
+    ["love this item", 4.7, 110.0],
+    ["bad quality", 1.2, 30.0],
+    ["terrible product", 1.0, 20.0],
+    ["worst purchase ever", 1.1, 25.0],
+    ["works as expected", 3.9, 80.0],
+    ["not worth the price", 2.1, 40.0],
 ]
 train_labels = [1, 1, 1, 0, 0, 0, 1, 0]
 
 eval_data = [
     ["amazing value", 4.6, 100.0],
-    ["poor quality",  1.5,  35.0],
+    ["poor quality", 1.5, 35.0],
 ]
 
 # ---------------------------------------------------------------------------
@@ -37,9 +37,19 @@ train_pool = Pool(
     text_features=text_features,
     feature_names=["review_text", "rating", "price"],
     text_processing={
-        "tokenizers": [{"tokenizer_id": "Space", "separator_type": "ByDelimiter", "delimiter": " "}],
+        "tokenizers": [
+            {"tokenizer_id": "Space", "separator_type": "ByDelimiter", "delimiter": " "}
+        ],
         "dictionaries": [{"dictionary_id": "Word", "occurrence_lower_bound": "1"}],
-        "feature_processing": {"default": [{"dictionaries_names": ["Word"], "feature_calcers": ["BoW"], "tokenizers_names": ["Space"]}]},
+        "feature_processing": {
+            "default": [
+                {
+                    "dictionaries_names": ["Word"],
+                    "feature_calcers": ["BoW"],
+                    "tokenizers_names": ["Space"],
+                }
+            ]
+        },
     },
 )
 
@@ -48,9 +58,19 @@ eval_pool = Pool(
     text_features=text_features,
     feature_names=["review_text", "rating", "price"],
     text_processing={
-        "tokenizers": [{"tokenizer_id": "Space", "separator_type": "ByDelimiter", "delimiter": " "}],
+        "tokenizers": [
+            {"tokenizer_id": "Space", "separator_type": "ByDelimiter", "delimiter": " "}
+        ],
         "dictionaries": [{"dictionary_id": "Word", "occurrence_lower_bound": "1"}],
-        "feature_processing": {"default": [{"dictionaries_names": ["Word"], "feature_calcers": ["BoW"], "tokenizers_names": ["Space"]}]},
+        "feature_processing": {
+            "default": [
+                {
+                    "dictionaries_names": ["Word"],
+                    "feature_calcers": ["BoW"],
+                    "tokenizers_names": ["Space"],
+                }
+            ]
+        },
     },
 )
 
