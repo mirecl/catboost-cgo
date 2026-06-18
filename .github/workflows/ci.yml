@@ -110,14 +110,15 @@ jobs:
 
       - name: Train (Python)
         run: |
-          python example/classifier/classifier.py 
-          python example/regressor/regressor.py 
-          python example/multiclassification/multiclassification.py 
+          python example/classifier/classifier.py
+          python example/regressor/regressor.py
+          python example/multiclassification/multiclassification.py
           python example/metadata/metadata.py
           python example/ranker/ranker.py
           python example/survival/survival.py
           python example/titanic/titanic.py
           python example/uncertainty/uncertainty.py
+          python example/text/text.py
 
       - name: Predict (Golang)
         run: |
