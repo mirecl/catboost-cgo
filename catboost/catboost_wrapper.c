@@ -6,14 +6,17 @@ typedef void (*TypeModelCalcerDelete)(ModelCalcerHandle *modelHandle);
 typedef bool (*TypeLoadFullModelFromBuffer)(ModelCalcerHandle *modelHandle, const void *binaryBuffer, size_t binaryBufferSize);
 typedef bool (*TypeCalcModelPredictionSingle)(ModelCalcerHandle *modelHandle, const float *floatFeatures, size_t floatFeaturesSize, const char **catFeatures, size_t catFeaturesSize, double *result, size_t resultSize);
 typedef bool (*TypeCalcModelPrediction)(ModelCalcerHandle *modelHandle, size_t docCount, const float **floatFeatures, size_t floatFeaturesSize, const char ***catFeatures, size_t catFeaturesSize, double *result, size_t resultSize);
+typedef bool (*TypeCalcModelPredictionText)(ModelCalcerHandle *modelHandle, size_t docCount, const float **floatFeatures, size_t floatFeaturesSize, const char ***catFeatures, size_t catFeaturesSize, const char ***textFeatures, size_t textFeaturesSize, double *result, size_t resultSize);
 typedef size_t (*TypeGetFloatFeaturesCount)(ModelCalcerHandle *modelHandle);
 typedef size_t (*TypeGetCatFeaturesCount)(ModelCalcerHandle *modelHandle);
+typedef size_t (*TypeGetTextFeaturesCount)(ModelCalcerHandle *modelHandle);
 typedef size_t (*TypeGetDimensionsCount)(ModelCalcerHandle *modelHandle);
 typedef bool (*TypeSetPredictionTypeString)(ModelCalcerHandle *modelHandle, const char *predictionTypeStr);
 typedef bool (*TypeGetModelUsedFeaturesNames)(ModelCalcerHandle *modelHandle, char ***featureNames, size_t *featureCount);
 typedef const char *(*TypeGetModelInfoValue)(ModelCalcerHandle *modelHandle, const char *keyPtr, size_t keySize);
 typedef bool (*TypeGetCatFeatureIndices)(ModelCalcerHandle *modelHandle, size_t **indices, size_t *count);
 typedef bool (*TypeGetFloatFeatureIndices)(ModelCalcerHandle *modelHandle, size_t **indices, size_t *count);
+typedef bool (*TypeGetTextFeatureIndices)(ModelCalcerHandle *modelHandle, size_t **indices, size_t *count);
 typedef bool (*TypeGetSupportedEvaluatorTypes)(ModelCalcerHandle *modelHandle, size_t **formulaEvaluatorTypes, size_t *count);
 typedef bool (*TypeEnableGPUEvaluation)(ModelCalcerHandle *modelHandle, int deviceId);
 
@@ -23,14 +26,17 @@ static TypeModelCalcerDelete ModelCalcerDeleteFn = NULL;
 static TypeLoadFullModelFromBuffer LoadFullModelFromBufferFn = NULL;
 static TypeCalcModelPredictionSingle CalcModelPredictionSingleFn = NULL;
 static TypeCalcModelPrediction CalcModelPredictionFn = NULL;
+static TypeCalcModelPredictionText CalcModelPredictionTextFn = NULL;
 static TypeGetFloatFeaturesCount GetFloatFeaturesCountFn = NULL;
 static TypeGetCatFeaturesCount GetCatFeaturesCountFn = NULL;
+static TypeGetTextFeaturesCount GetTextFeaturesCountFn = NULL;
 static TypeGetDimensionsCount GetDimensionsCountFn = NULL;
 static TypeSetPredictionTypeString SetPredictionTypeStringFn = NULL;
 static TypeGetModelUsedFeaturesNames GetModelUsedFeaturesNamesFn = NULL;
 static TypeGetModelInfoValue GetModelInfoValueFn = NULL;
 static TypeGetCatFeatureIndices GetCatFeatureIndicesFn = NULL;
 static TypeGetFloatFeatureIndices GetFloatFeatureIndicesFn = NULL;
+static TypeGetTextFeatureIndices GetTextFeatureIndicesFn = NULL;
 static TypeGetSupportedEvaluatorTypes GetSupportedEvaluatorTypesFn = NULL;
 static TypeEnableGPUEvaluation GetEnableGPUEvaluationFn = NULL;
 
@@ -63,6 +69,11 @@ bool WrapCalcModelPrediction(ModelCalcerHandle *modelHandle, size_t docCount, co
 	return CalcModelPredictionFn(modelHandle, docCount, floatFeatures, floatFeaturesSize, catFeatures, catFeaturesSize, result, resultSize);
 }
 
+bool WrapCalcModelPredictionText(ModelCalcerHandle *modelHandle, size_t docCount, const float **floatFeatures, size_t floatFeaturesSize, const char ***catFeatures, size_t catFeaturesSize, const char ***textFeatures, size_t textFeaturesSize, double *result, size_t resultSize)
+{
+	return CalcModelPredictionTextFn(modelHandle, docCount, floatFeatures, floatFeaturesSize, catFeatures, catFeaturesSize, textFeatures, textFeaturesSize, result, resultSize);
+}
+
 bool WrapGetCatFeatureIndices(ModelCalcerHandle *modelHandle, size_t **indices, size_t *count)
 {
 	return GetCatFeatureIndicesFn(modelHandle, indices, count);
@@ -71,6 +82,11 @@ bool WrapGetCatFeatureIndices(ModelCalcerHandle *modelHandle, size_t **indices, 
 bool WrapGetFloatFeatureIndices(ModelCalcerHandle *modelHandle, size_t **indices, size_t *count)
 {
 	return GetFloatFeatureIndicesFn(modelHandle, indices, count);
+}
+
+bool WrapGetTextFeatureIndices(ModelCalcerHandle *modelHandle, size_t **indices, size_t *count)
+{
+	return GetTextFeatureIndicesFn(modelHandle, indices, count);
 }
 
 bool WrapGetModelUsedFeaturesNames(ModelCalcerHandle *modelHandle, char ***featureNames, size_t *featureCount)
@@ -86,6 +102,11 @@ size_t WrapGetFloatFeaturesCount(ModelCalcerHandle *modelHandle)
 size_t WrapGetCatFeaturesCount(ModelCalcerHandle *modelHandle)
 {
 	return GetCatFeaturesCountFn(modelHandle);
+}
+
+size_t WrapGetTextFeaturesCount(ModelCalcerHandle *modelHandle)
+{
+	return GetTextFeaturesCountFn(modelHandle);
 }
 
 size_t WrapGetDimensionsCount(ModelCalcerHandle *modelHandle)
@@ -138,6 +159,11 @@ void SetCalcModelPredictionFn(void *fn)
 	CalcModelPredictionFn = ((TypeCalcModelPrediction)fn);
 }
 
+void SetCalcModelPredictionTextFn(void *fn)
+{
+	CalcModelPredictionTextFn = ((TypeCalcModelPredictionText)fn);
+}
+
 void SetGetFloatFeaturesCountFn(void *fn)
 {
 	GetFloatFeaturesCountFn = ((TypeGetFloatFeaturesCount)fn);
@@ -148,6 +174,11 @@ void SetGetCatFeaturesCountFn(void *fn)
 	GetCatFeaturesCountFn = ((TypeGetCatFeaturesCount)fn);
 }
 
+void SetGetTextFeaturesCountFn(void *fn)
+{
+	GetTextFeaturesCountFn = ((TypeGetTextFeaturesCount)fn);
+}
+
 void SetGetCatFeatureIndicesFn(void *fn)
 {
 	GetCatFeatureIndicesFn = ((TypeGetCatFeatureIndices)fn);
@@ -156,6 +187,11 @@ void SetGetCatFeatureIndicesFn(void *fn)
 void SetGetFloatFeatureIndicesFn(void *fn)
 {
 	GetFloatFeatureIndicesFn = ((TypeGetFloatFeatureIndices)fn);
+}
+
+void SetGetTextFeatureIndicesFn(void *fn)
+{
+	GetTextFeatureIndicesFn = ((TypeGetTextFeatureIndices)fn);
 }
 
 void SetGetDimensionsCountFn(void *fn)

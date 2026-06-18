@@ -57,6 +57,7 @@ var (
 	ErrNotFoundLibrary           = errors.New("not found catboost library")
 	ErrGetModelUsedFeaturesNames = errors.New("failed get used features name")
 	ErrCalcModelPrediction       = errors.New("failed inference model")
+	ErrCalcModelPredictionText   = errors.New("failed inference model with text features")
 	ErrNotSupportedPlatform      = errors.New("supported only Linux and MacOS")
 	ErrLoadLibrary               = errors.New("failed loading CatBoost shared library")
 	ErrSetPredictionType         = errors.New("failed set prediction type")
@@ -104,17 +105,19 @@ func initialization() error {
 	lib.RegisterFn("LoadFullModelFromBuffer")
 	lib.RegisterFn("CalcModelPredictionSingle")
 	lib.RegisterFn("CalcModelPrediction")
+	lib.RegisterFn("CalcModelPredictionText")
 	lib.RegisterFn("GetErrorString")
 	lib.RegisterFn("GetFloatFeaturesCount")
 	lib.RegisterFn("GetCatFeaturesCount")
+	lib.RegisterFn("GetTextFeaturesCount")
 	lib.RegisterFn("GetDimensionsCount")
 	lib.RegisterFn("SetPredictionTypeString")
 	lib.RegisterFn("GetModelUsedFeaturesNames")
 	lib.RegisterFn("GetModelInfoValue")
 	lib.RegisterFn("GetCatFeatureIndices")
 	lib.RegisterFn("GetFloatFeatureIndices")
+	lib.RegisterFn("GetTextFeatureIndices")
 	lib.RegisterFn("GetSupportedEvaluatorTypes")
-	lib.RegisterFn("EnableGPUEvaluation")
 	lib.RegisterFn("EnableGPUEvaluation")
 
 	return nil
@@ -136,12 +139,16 @@ func (l *library) RegisterFn(fnName string) {
 		C.SetCalcModelPredictionSingleFn(fnC)
 	case "CalcModelPrediction":
 		C.SetCalcModelPredictionFn(fnC)
+	case "CalcModelPredictionText":
+		C.SetCalcModelPredictionTextFn(fnC)
 	case "GetErrorString":
 		C.SetGetErrorStringFn(fnC)
 	case "GetFloatFeaturesCount":
 		C.SetGetFloatFeaturesCountFn(fnC)
 	case "GetCatFeaturesCount":
 		C.SetGetCatFeaturesCountFn(fnC)
+	case "GetTextFeaturesCount":
+		C.SetGetTextFeaturesCountFn(fnC)
 	case "SetPredictionTypeString":
 		C.SetSetPredictionTypeStringFn(fnC)
 	case "GetDimensionsCount":
@@ -154,6 +161,8 @@ func (l *library) RegisterFn(fnName string) {
 		C.SetGetCatFeatureIndicesFn(fnC)
 	case "GetFloatFeatureIndices":
 		C.SetGetFloatFeatureIndicesFn(fnC)
+	case "GetTextFeatureIndices":
+		C.SetGetTextFeatureIndicesFn(fnC)
 	case "GetSupportedEvaluatorTypes":
 		C.SetGetSupportedEvaluatorTypesFn(fnC)
 	case "EnableGPUEvaluation":
@@ -333,9 +342,14 @@ func (m *Model) GetCatFeaturesCount() int {
 	return int(C.WrapGetCatFeaturesCount(m.handler))
 }
 
+// GetTextFeaturesCount returns expected text feature count for model.
+func (m *Model) GetTextFeaturesCount() int {
+	return int(C.WrapGetTextFeaturesCount(m.handler))
+}
+
 // GetFeaturesCount returns all expected feature count for model.
 func (m *Model) GetFeaturesCount() int {
-	return m.GetCatFeaturesCount() + m.GetFloatFeaturesCount()
+	return m.GetCatFeaturesCount() + m.GetFloatFeaturesCount() + m.GetTextFeaturesCount()
 }
 
 // GetDimensionsCount returns number of dimensions in model.
@@ -419,6 +433,60 @@ func (m *Model) PredictSingle(floats []float32, cats []string) ([]float64, error
 	return preds, nil
 }
 
+// PredictText returns predictions for samples with text features.
+func (m *Model) PredictText(floats [][]float32, cats [][]string, texts [][]string) ([]float64, error) {
+	var nSamples int
+
+	// Get length sample
+	nSamples = len(floats)
+	if nSamples == 0 {
+		nSamples = len(cats)
+	}
+	if nSamples == 0 {
+		nSamples = len(texts)
+	}
+
+	floatFeaturesCount := m.GetFloatFeaturesCount()
+	catFeaturesCount := m.GetCatFeaturesCount()
+	textFeaturesCount := m.GetTextFeaturesCount()
+
+	// Special for Multiclassification (size > 1)
+	size := m.GetRowResultSize()
+
+	preds := make([]float64, nSamples*size)
+
+	floatsC := makeFloatArray2D(floats)
+	defer C.free(unsafe.Pointer(floatsC))
+
+	catsC := makeCharArray2D(cats)
+	defer C.freeCharArray2D(catsC, C.int(len(cats)), C.int(catFeaturesCount))
+
+	textsC := makeCharArray2D(texts)
+	defer C.freeCharArray2D(textsC, C.int(len(texts)), C.int(textFeaturesCount))
+
+	if !C.WrapCalcModelPredictionText(
+		m.handler,
+		C.size_t(nSamples),
+		floatsC,
+		C.size_t(floatFeaturesCount),
+		catsC,
+		C.size_t(catFeaturesCount),
+		textsC,
+		C.size_t(textFeaturesCount),
+		(*C.double)(&preds[0]),
+		C.size_t(len(preds)),
+	) {
+		return nil, fmt.Errorf(formatErrorMessage, ErrCalcModelPredictionText, GetError())
+	}
+
+	return preds, nil
+}
+
+// PredictSingleText returns prediction for a single sample with text features.
+func (m *Model) PredictSingleText(floats []float32, cats []string, texts []string) ([]float64, error) {
+	return m.PredictText([][]float32{floats}, [][]string{cats}, [][]string{texts})
+}
+
 // Delete model handle.
 func (m *Model) Delete() {
 	C.WrapModelCalcerDelete(m.handler)
@@ -475,6 +543,25 @@ func (m *Model) GetFloatFeatureIndices() ([]uint64, error) {
 	}
 
 	indices := (*[1 << 28]uint64)(unsafe.Pointer(floatsFeatureIndicesC))[:floatsFeatureNum:floatsFeatureNum]
+	return indices, nil
+}
+
+// GetTextFeatureIndices expected indices of text features used in the model.
+func (m *Model) GetTextFeatureIndices() ([]uint64, error) {
+	textsFeatureNum := uint64(m.GetTextFeaturesCount())
+	if textsFeatureNum == 0 {
+		return []uint64{}, nil
+	}
+
+	textsFeatureIndices := make([]*uint64, textsFeatureNum)
+	textsFeatureIndicesC := (*C.size_t)(textsFeatureIndices[0])
+	defer C.free(unsafe.Pointer(textsFeatureIndicesC))
+
+	if !C.WrapGetTextFeatureIndices(m.handler, &textsFeatureIndicesC, (*C.size_t)(&textsFeatureNum)) {
+		return nil, fmt.Errorf(formatErrorMessage, ErrGetIndices, GetError())
+	}
+
+	indices := (*[1 << 28]uint64)(unsafe.Pointer(textsFeatureIndicesC))[:textsFeatureNum:textsFeatureNum]
 	return indices, nil
 }
 
