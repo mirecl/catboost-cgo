@@ -255,7 +255,7 @@ func TestPredictText(t *testing.T) {
 
 	preds, err := model.PredictText(floats, cats, texts)
 	require.NoError(t, err)
-	require.Equal(t, []float64{1.3351632373725693, -1.2562312927248542}, preds)
+	require.Equal(t, []float64{1.3351632373725695, -1.2562312927248545}, preds)
 }
 
 func TestPredictSingleText(t *testing.T) {
@@ -270,7 +270,7 @@ func TestPredictSingleText(t *testing.T) {
 		[]string{"amazing value"},
 	)
 	require.NoError(t, err)
-	require.Equal(t, []float64{1.3351632373725693}, preds)
+	require.Equal(t, []float64{1.3351632373725695}, preds)
 }
 
 func TestPredictTextMatchesSingle(t *testing.T) {

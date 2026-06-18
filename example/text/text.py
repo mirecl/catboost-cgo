@@ -1,14 +1,8 @@
-# https://catboost.ai/en/docs/concepts/python-usages-examples#text-features
 from catboost import CatBoostClassifier, Pool
 import pathlib
 
 path = pathlib.Path(__file__).parent.resolve()
 
-# ---------------------------------------------------------------------------
-# Dataset
-# Column layout: [text_feature(0), float_feature(1), float_feature(2)]
-# Task: binary sentiment classification
-# ---------------------------------------------------------------------------
 text_features = [0]
 
 train_data = [
@@ -29,49 +23,22 @@ eval_data = [
 ]
 
 # ---------------------------------------------------------------------------
-# Build Pool objects so CatBoost knows which column carries text
+# Build Pool objects — text_features marks which column carries text.
+# Text processing params live on the model so they are stored in the .cbm
+# file; this makes GetTextFeaturesCount / GetTextFeatureIndices work via
+# the C API.
 # ---------------------------------------------------------------------------
 train_pool = Pool(
     data=train_data,
     label=train_labels,
     text_features=text_features,
     feature_names=["review_text", "rating", "price"],
-    text_processing={
-        "tokenizers": [
-            {"tokenizer_id": "Space", "separator_type": "ByDelimiter", "delimiter": " "}
-        ],
-        "dictionaries": [{"dictionary_id": "Word", "occurrence_lower_bound": "1"}],
-        "feature_processing": {
-            "default": [
-                {
-                    "dictionaries_names": ["Word"],
-                    "feature_calcers": ["BoW"],
-                    "tokenizers_names": ["Space"],
-                }
-            ]
-        },
-    },
 )
 
 eval_pool = Pool(
     data=eval_data,
     text_features=text_features,
     feature_names=["review_text", "rating", "price"],
-    text_processing={
-        "tokenizers": [
-            {"tokenizer_id": "Space", "separator_type": "ByDelimiter", "delimiter": " "}
-        ],
-        "dictionaries": [{"dictionary_id": "Word", "occurrence_lower_bound": "1"}],
-        "feature_processing": {
-            "default": [
-                {
-                    "dictionaries_names": ["Word"],
-                    "feature_calcers": ["BoW"],
-                    "tokenizers_names": ["Space"],
-                }
-            ]
-        },
-    },
 )
 
 # ---------------------------------------------------------------------------
@@ -83,6 +50,11 @@ model = CatBoostClassifier(
     depth=4,
     loss_function="Logloss",
     random_seed=42,
+    tokenizers=[
+        {"tokenizer_id": "Space", "separator_type": "ByDelimiter", "delimiter": " "}
+    ],
+    dictionaries=[{"dictionary_id": "Word", "occurrence_lower_bound": "1"}],
+    feature_calcers=["BoW"],
 )
 
 model.fit(train_pool, eval_set=eval_pool, silent=True)
@@ -96,8 +68,5 @@ print(f"Preds `RawFormulaVal` : {preds_raw.tolist()}")
 preds_class = model.predict(eval_pool, prediction_type="Class")
 print(f"Preds `Class`         : {preds_class.tolist()}")
 
-# ---------------------------------------------------------------------------
-# Save model
-# ---------------------------------------------------------------------------
 model.save_model(f"{path}/text.cbm")
 print(f"Model saved to {path}/text.cbm")
