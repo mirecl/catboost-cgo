@@ -14,6 +14,7 @@ const (
 	testModelPathClassifier          = "../example/classifier/classifier.cbm"
 	testModelPathMulticlassification = "../example/multiclassification/multiclassification.cbm"
 	testModelPathMetadata            = "../example/metadata/metadata.cbm"
+	testModelPathText                = "../example/text/text.cbm"
 )
 
 func TestVersion(t *testing.T) {
@@ -202,4 +203,94 @@ func TestEnableGPUEvaluation(t *testing.T) {
 	if runtime.GOOS == "linux" {
 		require.ErrorIs(t, err, cb.ErrEnabledGPU)
 	}
+}
+
+func TestTextFeaturesCount(t *testing.T) {
+	model, err := cb.LoadFullModelFromFile(testModelPathText)
+	require.NoError(t, err)
+	require.NotNil(t, model)
+
+	require.Equal(t, 1, model.GetTextFeaturesCount())
+	require.Equal(t, 2, model.GetFloatFeaturesCount())
+	require.Equal(t, 0, model.GetCatFeaturesCount())
+	// GetFeaturesCount now includes text features
+	require.Equal(t, 3, model.GetFeaturesCount())
+}
+
+func TestTextFeatureIndices(t *testing.T) {
+	model, err := cb.LoadFullModelFromFile(testModelPathText)
+	require.NoError(t, err)
+	require.NotNil(t, model)
+
+	textIndices, err := model.GetTextFeatureIndices()
+	require.NoError(t, err)
+	require.Equal(t, []uint64{0}, textIndices)
+
+	floatIndices, err := model.GetFloatFeatureIndices()
+	require.NoError(t, err)
+	require.Equal(t, []uint64{1, 2}, floatIndices)
+
+	catIndices, err := model.GetCatFeatureIndices()
+	require.NoError(t, err)
+	require.Equal(t, []uint64{}, catIndices)
+}
+
+func TestPredictText(t *testing.T) {
+	model, err := cb.LoadFullModelFromFile(testModelPathText)
+	require.NoError(t, err)
+	require.NotNil(t, model)
+
+	// eval_data from text.py:
+	//   ["amazing value", 4.6, 100.0]
+	//   ["poor quality",  1.5,  35.0]
+	floats := [][]float32{
+		{4.6, 100.0},
+		{1.5, 35.0},
+	}
+	cats := [][]string{{}, {}}
+	texts := [][]string{
+		{"amazing value"},
+		{"poor quality"},
+	}
+
+	preds, err := model.PredictText(floats, cats, texts)
+	require.NoError(t, err)
+	require.Equal(t, []float64{1.3351632373725695, -1.2562312927248545}, preds)
+}
+
+func TestPredictSingleText(t *testing.T) {
+	model, err := cb.LoadFullModelFromFile(testModelPathText)
+	require.NoError(t, err)
+	require.NotNil(t, model)
+
+	// First eval sample: ["amazing value", 4.6, 100.0]
+	preds, err := model.PredictSingleText(
+		[]float32{4.6, 100.0},
+		[]string{},
+		[]string{"amazing value"},
+	)
+	require.NoError(t, err)
+	require.Equal(t, []float64{1.3351632373725695}, preds)
+}
+
+func TestPredictTextMatchesSingle(t *testing.T) {
+	model, err := cb.LoadFullModelFromFile(testModelPathText)
+	require.NoError(t, err)
+	require.NotNil(t, model)
+
+	floats := []float32{1.5, 35.0}
+	cats := []string{}
+	texts := []string{"poor quality"}
+
+	batchPreds, err := model.PredictText(
+		[][]float32{floats},
+		[][]string{cats},
+		[][]string{texts},
+	)
+	require.NoError(t, err)
+
+	singlePreds, err := model.PredictSingleText(floats, cats, texts)
+	require.NoError(t, err)
+
+	require.Equal(t, batchPreds, singlePreds)
 }
