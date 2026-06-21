@@ -90,7 +90,7 @@ For more information, see <https://catboost.ai/en/docs/concepts/c-plus-plus-api_
 
 + Numeric ✅
 + Categorical ✅ (<https://catboost.ai/en/docs/features/categorical-features>)
-+ Text 🚫 (<https://catboost.ai/en/docs/features/text-features>)
++ Text ✅ (<https://catboost.ai/en/docs/features/text-features>)
 + Embeddings 🚫 (<https://catboost.ai/en/docs/features/embeddings-features>)
 
 ## Installation
